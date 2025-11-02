@@ -13,6 +13,12 @@ This directory contains JSON configuration files for the dashboard.
   - System information
   - Auto-detected at runtime if not specified
 
+- **`mqtt_config.json`** - MQTT/IoT device configuration
+  - MQTT broker settings (host, port, credentials)
+  - Tasmota device definitions
+  - MQTT client settings
+  - See [MQTT_TASMOTA_GUIDE.md](../docs/MQTT_TASMOTA_GUIDE.md) for details
+
 ## Adding New Configuration Files
 
 When adding new JSON config files:

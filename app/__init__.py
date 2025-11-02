@@ -41,6 +41,7 @@ def create_app(config_name='production'):
     from app.routes.tools import tools_bp
     from app.routes.logs import logs_bp
     from app.routes.gpio import gpio_bp
+    from app.routes.mqtt import mqtt_bp
     
     app.register_blueprint(main_bp)
     app.register_blueprint(system_bp, url_prefix='/api/system')
@@ -48,6 +49,7 @@ def create_app(config_name='production'):
     app.register_blueprint(tools_bp, url_prefix='/api/tools')
     app.register_blueprint(logs_bp, url_prefix='/api/logs')
     app.register_blueprint(gpio_bp, url_prefix='/api/gpio')
+    app.register_blueprint(mqtt_bp, url_prefix='/api/mqtt')
     
     app.logger.info('Flask application initialized')
     

@@ -65,6 +65,12 @@ def gpio_wiring():
     return render_template('gpio_wiring.html')
 
 
+@main_bp.route('/mqtt')
+def mqtt():
+    """MQTT/IoT device control page"""
+    return render_template('mqtt.html')
+
+
 @main_bp.route('/docs/<path:filename>')
 def serve_docs(filename):
     """Serve documentation files"""

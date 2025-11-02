@@ -10,6 +10,7 @@
 
 - 📊 **Real-time System Monitoring** - CPU, memory, disk, network, temperature
 - ⚡ **GPIO Control** - Control GPIO pins via web interface with breadboard wiring guides
+- 📡 **MQTT/IoT Support** - Control Tasmota ESP32 devices and IoT sensors
 - 🎵 **Service Management** - Monitor and control Raspotify, Shairport-Sync
 - 🌤️ **Weather Integration** - Local weather and world clocks
 - 📱 **Mobile-Friendly** - Responsive glassmorphism UI
@@ -54,6 +55,19 @@ Control Raspberry Pi GPIO pins through a beautiful web interface:
 - **Supports**: LEDs, Relays, and custom GPIO devices
 
 See **[docs/GPIO.md](docs/GPIO.md)** for complete GPIO documentation.
+
+## 📡 MQTT/IoT Integration
+
+Control Tasmota ESP32 devices and IoT sensors via MQTT:
+
+- **Easy Setup** - Built-in MQTT client with Mosquitto broker support
+- **Tasmota Devices** - Control switches, relays, RGB lights, sensors
+- **Real-time Control** - Power on/off, dimmer, color picker
+- **Device Management** - Add/remove devices via web interface
+- **REST API** - Full API for automation
+- **Auto-Discovery** - Automatic device detection (coming soon)
+
+See **[docs/MQTT_QUICK_START.md](docs/MQTT_QUICK_START.md)** for 5-minute setup guide and **[docs/MQTT_TASMOTA_GUIDE.md](docs/MQTT_TASMOTA_GUIDE.md)** for complete documentation.
 
 ## 📁 Project Structure
 

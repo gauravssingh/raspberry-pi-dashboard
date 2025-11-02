@@ -20,12 +20,17 @@ dashboard/
 │   ├── GPIO_WIRING_GUIDE.md          # Breadboard wiring diagrams and LED setup
 │   ├── GPIO_PIN_REFERENCE.md         # GPIO pin reference and hardware details
 │   ├── GPIO_IMPLEMENTATION.md        # GPIO technical implementation details
+│   ├── MQTT_QUICK_START.md           # MQTT/IoT quick setup guide (5 minutes)
+│   ├── MQTT_TASMOTA_SETUP.md        # Complete setup guide with GPIO/relay config
+│   ├── MQTT_TASMOTA_GUIDE.md        # Advanced MQTT/Tasmota reference guide
+│   ├── MQTT_SETUP_CHECKLIST.md       # MQTT setup verification checklist
+│   ├── MQTT_IMPLEMENTATION_SUMMARY.md # MQTT technical implementation details
 │   ├── SYSTEM_CONFIGURATION.md       # System config and IP detection
 │   ├── STRUCTURE.md                  # Project structure reference
 │   ├── PROJECT_HISTORY.md            # Migration guide and project evolution
 │   ├── GIT_SETUP_GUIDE.md           # Git workflow and best practices
+│   ├── GITHUB.md                    # GitHub publishing guide (consolidated)
 │   ├── SECURITY_AUDIT.md            # Security scan report
-│   └── GITHUB_UPLOAD_COMMANDS.md    # GitHub upload guide
 └── scripts/                           # Utility scripts
     └── test_new_endpoints.sh         # API testing script
 ```
@@ -68,6 +73,13 @@ dashboard/
 - Troubleshooting guide
 - See also: [GPIO_PIN_REFERENCE.md](GPIO_PIN_REFERENCE.md) for pin details
 
+### I want to control IoT devices via MQTT
+→ Start with **[MQTT_QUICK_START.md](MQTT_QUICK_START.md)**
+- 5-minute setup guide
+- Tasmota ESP32 device control
+- Web interface usage
+- See also: [MQTT_TASMOTA_GUIDE.md](MQTT_TASMOTA_GUIDE.md) for complete guide
+
 ### I want to understand the project structure
 → Review **[STRUCTURE.md](STRUCTURE.md)**
 - Complete directory tree
@@ -90,11 +102,12 @@ dashboard/
 - Technical documentation
 
 ### I want to upload to GitHub
-→ Read **[GITHUB_UPLOAD_COMMANDS.md](GITHUB_UPLOAD_COMMANDS.md)**
-- Security audit complete
-- Step-by-step upload guide
-- Git best practices
-- Repository setup
+→ Read **[GITHUB.md](GITHUB.md)**
+- Security audit status
+- Step-by-step upload commands
+- Repository setup guide
+- Post-upload checklist
+- Troubleshooting
 
 ---
 
@@ -186,6 +199,43 @@ dashboard/
 
 **Use when:** You're working with GPIO pins or hardware control
 
+**[MQTT_QUICK_START.md](MQTT_QUICK_START.md)** - MQTT quick setup guide
+- 5-minute setup for Tasmota devices
+- Basic broker installation
+- Device configuration steps
+- Quick troubleshooting
+
+**[MQTT_TASMOTA_SETUP.md](MQTT_TASMOTA_SETUP.md)** - Complete setup guide
+- Step-by-step Raspberry Pi configuration
+- ESP32 Tasmota configuration
+- GPIO/relay setup and wiring
+- Dashboard configuration
+- Complete troubleshooting guide
+- Tested configuration examples
+
+**[MQTT_TASMOTA_GUIDE.md](MQTT_TASMOTA_GUIDE.md)** - Advanced MQTT reference
+- Comprehensive setup instructions
+- Tasmota device configuration
+- Advanced features and commands
+- Security best practices
+- API reference
+- Troubleshooting guide
+
+**[MQTT_SETUP_CHECKLIST.md](MQTT_SETUP_CHECKLIST.md)** - Setup verification
+- Step-by-step verification checklist
+- Common issues and solutions
+- Quick command reference
+- Testing procedures
+
+**[MQTT_IMPLEMENTATION_SUMMARY.md](MQTT_IMPLEMENTATION_SUMMARY.md)** - Technical details
+- Implementation overview
+- Architecture and components
+- File structure
+- API endpoints
+- Code examples
+
+**Use when:** You're setting up MQTT/IoT devices or understanding the implementation
+
 **[STRUCTURE.md](STRUCTURE.md)** - Project organization
 - Complete directory tree
 - File-by-file descriptions
@@ -216,7 +266,15 @@ dashboard/
 - Configuration guide
 - Quick start commands
 
-**Use when:** You want a comprehensive technical overview
+**[GITHUB.md](GITHUB.md)** - GitHub publishing guide
+- Security audit status
+- Repository contents overview
+- Step-by-step upload commands
+- Post-upload repository setup
+- Troubleshooting guide
+- Commit message best practices
+
+**Use when:** You're ready to publish your project to GitHub
 
 ---
 
@@ -228,6 +286,7 @@ dashboard/
 | **Deploy to production** | [DEPLOYMENT.md](DEPLOYMENT.md) |
 | **Use the API** | [API.md](API.md) |
 | **Control GPIO pins** | [GPIO.md](GPIO.md) |
+| **Control MQTT/IoT devices** | [MQTT_QUICK_START.md](MQTT_QUICK_START.md) |
 | **Add a new service** | [ADDING_SERVICES.md](ADDING_SERVICES.md) |
 | **Understand the code** | [STRUCTURE.md](STRUCTURE.md) |
 | **Migrate from old version** | [PROJECT_HISTORY.md](PROJECT_HISTORY.md) |
@@ -276,14 +335,15 @@ curl http://localhost:5050/api/system/stats | jq
 
 ## 📊 Documentation Stats
 
-- **Total Documentation Files:** 17 files (including GitHub guides)
+- **Total Documentation Files:** 18 files (consolidated from 23)
 - **API Documentation:** Complete reference with performance details
 - **Getting Started Guide:** Quick + detailed setup in one file
 - **GPIO Documentation:** Complete hardware control guide with pin reference and visual wiring
-- **GitHub Guides:** Git setup, security audit, upload commands
+- **MQTT Documentation:** Complete IoT/MQTT setup guide with quick start, comprehensive guide, checklist, and technical details
+- **GitHub Guide:** Consolidated publishing guide (from 3 files)
 - **Deployment Guide:** Includes nginx + systemd configuration
 - **Code Examples:** JavaScript, Python, cURL
-- **Lines of Documentation:** 5000+ lines
+- **Lines of Documentation:** 6000+ lines
 
 ---
 
@@ -307,13 +367,26 @@ GPIO documentation has been organized under `docs/`:
 - `GPIO_PIN_REFERENCE.md` → **GPIO_PIN_REFERENCE.md** (hardware reference)
 - `GPIO_IMPLEMENTATION_SUMMARY.md` → **GPIO_IMPLEMENTATION.md** (technical details)
 
+### MQTT Documentation Added
+
+MQTT/IoT documentation has been organized under `docs/`:
+- **MQTT_QUICK_START.md** - 5-minute quick setup guide
+- **MQTT_TASMOTA_GUIDE.md** - Complete comprehensive guide (40+ pages)
+- **MQTT_SETUP_CHECKLIST.md** - Verification checklist
+- **MQTT_IMPLEMENTATION_SUMMARY.md** - Technical implementation details
+
+### GitHub Documentation Consolidated
+
+GitHub-related documentation consolidated:
+- `GITHUB_PREP_SUMMARY.md` + `GITHUB_UPLOAD_COMMANDS.md` + `READY_FOR_GITHUB.md` → **GITHUB.md** (consolidated guide)
+
 **Benefits:**
-- ✅ 58% fewer files to navigate
+- ✅ 22% fewer files to navigate (18 files, down from 23)
 - ✅ Less duplication
 - ✅ Easier to maintain
 - ✅ Clearer organization
 - ✅ All important information preserved
-- ✅ GPIO docs properly organized in docs/ directory
+- ✅ Better documentation structure
 
 ---
 
@@ -358,11 +431,12 @@ If you're completely new, we recommend this reading order:
 1. **[GETTING_STARTED.md](GETTING_STARTED.md)** - Get it running (10 minutes)
 2. **[API.md](API.md)** - Understand the endpoints (15 minutes)
 3. **[GPIO.md](GPIO.md)** - Control GPIO pins (10 minutes) - *if using GPIO*
-4. **[STRUCTURE.md](STRUCTURE.md)** - Navigate the code (10 minutes)
-5. **[ADDING_SERVICES.md](ADDING_SERVICES.md)** - Extend it (when needed)
-6. **[DEPLOYMENT.md](DEPLOYMENT.md)** - Deploy it (when ready)
+4. **[MQTT_QUICK_START.md](MQTT_QUICK_START.md)** - Control IoT devices (5 minutes) - *if using MQTT*
+5. **[STRUCTURE.md](STRUCTURE.md)** - Navigate the code (10 minutes)
+6. **[ADDING_SERVICES.md](ADDING_SERVICES.md)** - Extend it (when needed)
+7. **[DEPLOYMENT.md](DEPLOYMENT.md)** - Deploy it (when ready)
 
-**Total time to full understanding:** ~45-55 minutes
+**Total time to full understanding:** ~50-60 minutes
 
 ---
 
@@ -412,5 +486,5 @@ If you're completely new, we recommend this reading order:
 
 ---
 
-*Last updated: October 29, 2025*
-*Documentation consolidated and streamlined for better organization*
+*Last updated: November 2, 2025*
+*Documentation organized with MQTT/IoT guides added*

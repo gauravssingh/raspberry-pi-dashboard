@@ -1,0 +1,484 @@
+{% extends "base.html" %}
+
+{% block title %}MQTT/IoT Control - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>MQTT/IoT Control</h1>
+<p class="tagline">Control Tasmota ESP32 devices and IoT sensors</p>
+
+<!-- Toast notification container -->
+<div id="toast-container" class="toast-container"></div>
+
+<!-- MQTT Connection Status -->
+<div id="mqtt-status-container" style="text-align: center; margin: 1rem auto; max-width: 800px;">
+  <div class="info-box" style="display: inline-block; padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 0.95rem;">
+    <div style="display: flex; align-items: center; gap: 0.8rem;">
+      <span id="mqtt-status-indicator" style="font-size: 1.2rem;">🔴</span>
+      <div style="text-align: left;">
+        <div id="mqtt-status-text" style="font-weight: 600;">Disconnected</div>
+        <div id="mqtt-broker-info" style="font-size: 0.85rem; opacity: 0.7;">Not configured</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top: 0.8rem;">
+    <button id="connect-btn" class="btn btn-primary" style="margin-right: 0.5rem;">Connect</button>
+    <button id="disconnect-btn" class="btn btn-secondary" style="margin-right: 0.5rem;" disabled>Disconnect</button>
+    <button id="config-btn" class="btn btn-secondary">⚙️ Configure</button>
+  </div>
+</div>
+
+<!-- Configuration Modal -->
+<div id="config-modal" class="modal" style="display: none;">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h2>MQTT Configuration</h2>
+      <button class="modal-close" onclick="closeConfigModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="mqtt-config-form">
+        <div class="form-section">
+          <h3>Broker Settings</h3>
+          <div class="form-group">
+            <label for="broker-host">Broker Host/IP:</label>
+            <input type="text" id="broker-host" name="host" placeholder="localhost" required>
+          </div>
+          <div class="form-group">
+            <label for="broker-port">Broker Port:</label>
+            <input type="number" id="broker-port" name="port" value="1883" required>
+          </div>
+          <div class="form-group">
+            <label for="broker-username">Username (optional):</label>
+            <input type="text" id="broker-username" name="username" placeholder="Leave blank if not required">
+          </div>
+          <div class="form-group">
+            <label for="broker-password">Password (optional):</label>
+            <input type="password" id="broker-password" name="password" placeholder="Leave blank if not required">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Configuration</button>
+          <button type="button" class="btn btn-secondary" onclick="closeConfigModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Add Device Modal -->
+<div id="add-device-modal" class="modal" style="display: none;">
+  <div class="modal-content" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2>Add Tasmota Device</h2>
+      <button class="modal-close" onclick="closeAddDeviceModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="add-device-form">
+        <div class="form-group">
+          <label for="device-name">Device Name:</label>
+          <input type="text" id="device-name" name="name" placeholder="e.g., Living Room Light" required>
+        </div>
+        <div class="form-group">
+          <label for="device-topic">MQTT Topic:</label>
+          <input type="text" id="device-topic" name="topic" placeholder="e.g., tasmota_living_room" required>
+          <small style="opacity: 0.7;">This should match your Tasmota device's topic setting</small>
+        </div>
+        <div class="form-group">
+          <label for="device-type">Device Type:</label>
+          <select id="device-type" name="device_type">
+            <option value="switch">Switch/Relay</option>
+            <option value="light">Light/Dimmer</option>
+            <option value="rgb">RGB Light</option>
+            <option value="sensor">Sensor</option>
+            <option value="generic">Generic</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="device-description">Description (optional):</label>
+          <input type="text" id="device-description" name="description" placeholder="Optional description">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Add Device</button>
+          <button type="button" class="btn btn-secondary" onclick="closeAddDeviceModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Device Control Modal -->
+<div id="device-control-modal" class="modal" style="display: none;">
+  <div class="modal-content" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2 id="control-device-name">Device Control</h2>
+      <button class="modal-close" onclick="closeControlModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="control-content">
+        <!-- Control options will be dynamically loaded here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Devices Container -->
+<div id="devices-container" style="max-width: 1200px; margin: 2rem auto;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <h2 style="margin: 0;">Devices</h2>
+    <button id="add-device-btn" class="btn btn-primary">+ Add Device</button>
+  </div>
+  
+  <div id="devices-grid" class="devices-grid">
+    <div class="loading-message" style="text-align: center; padding: 2rem; color: #888;">
+      Connect to MQTT broker to view devices...
+    </div>
+  </div>
+</div>
+
+<div class="quick-links" style="max-width: 400px;">
+  <a href="{{ url_for('main.index') }}" class="link-card"><span class="link-icon">🏠</span><div class="link-title">Home</div></a>
+  <a href="{{ url_for('main.mqtt') }}" class="link-card"><span class="link-icon">🔄</span><div class="link-title">Refresh</div></a>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .devices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .device-card {
+    background: linear-gradient(135deg, rgba(44, 62, 80, 0.3), rgba(52, 73, 94, 0.3));
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .device-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+    border-color: rgba(52, 152, 219, 0.5);
+  }
+
+  .device-card.offline {
+    opacity: 0.6;
+    border-color: rgba(231, 76, 60, 0.3);
+  }
+
+  .device-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .device-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #ecf0f1;
+  }
+
+  .device-status {
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .device-status.online {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.4);
+  }
+
+  .device-status.offline {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    border: 1px solid rgba(231, 76, 60, 0.4);
+  }
+
+  .device-info {
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: #bdc3c7;
+  }
+
+  .device-topic {
+    font-family: 'Courier New', monospace;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+
+  .device-type-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    background: rgba(52, 152, 219, 0.2);
+    color: #3498db;
+    margin-top: 0.5rem;
+  }
+
+  .device-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #2980b9, #21618c);
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+  }
+
+  .btn-secondary {
+    background: rgba(149, 165, 166, 0.3);
+    color: #ecf0f1;
+    border: 1px solid rgba(149, 165, 166, 0.5);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(149, 165, 166, 0.5);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+  }
+
+  .btn-success:hover {
+    background: linear-gradient(135deg, #27ae60, #229954);
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.4);
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+  }
+
+  .btn-danger:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+  }
+
+  .btn-warning {
+    background: linear-gradient(135deg, #f39c12, #d68910);
+    color: white;
+  }
+
+  .btn-warning:hover {
+    background: linear-gradient(135deg, #d68910, #b9770e);
+    box-shadow: 0 2px 8px rgba(243, 156, 18, 0.4);
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  /* Modal styles */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+  }
+
+  .modal-content {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    border-radius: 12px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+  }
+
+  .modal-header h2 {
+    margin: 0;
+    color: #ecf0f1;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: #ecf0f1;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 1;
+  }
+
+  .modal-close:hover {
+    color: #e74c3c;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .form-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-section h3 {
+    color: #3498db;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #bdc3c7;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.7rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 6px;
+    color: #ecf0f1;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+
+  .form-group small {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.8rem;
+    color: #95a5a6;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .info-box {
+    background: rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+  }
+
+  .loading-message {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+  }
+
+  /* Toast notifications */
+  .toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+  }
+
+  .toast {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-left: 4px solid;
+    animation: slideIn 0.3s ease;
+    min-width: 250px;
+    max-width: 400px;
+  }
+
+  .toast.success {
+    border-left-color: #2ecc71;
+  }
+
+  .toast.error {
+    border-left-color: #e74c3c;
+  }
+
+  .toast.warning {
+    border-left-color: #f39c12;
+  }
+
+  .toast.info {
+    border-left-color: #3498db;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/mqtt.js') }}"></script>
+{% endblock %}
+
