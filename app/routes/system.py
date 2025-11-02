@@ -81,7 +81,7 @@ def network_interfaces():
 def public_ip():
     """Get public IP address"""
     try:
-    ip = system_monitor.get_public_ip()
+        ip = system_monitor.get_public_ip()
         return jsonify({
             'success': True,
             'public_ip': ip
@@ -112,12 +112,12 @@ def weather():
             return jsonify({
                 'success': True,
                 'weather': weather_data
-        })
-    else:
-        return jsonify({
-            'success': False,
+            })
+        else:
+            return jsonify({
+                'success': False,
                 'error': 'Weather data unavailable'
-        }), 503
+            }), 503
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
