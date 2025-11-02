@@ -41,7 +41,7 @@ For detailed setup, see **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)**
 
 ## 📸 Screenshots
 
-*Dashboard coming soon - add your own screenshots*
+<img width="1554" height="1014" alt="Screenshot 2025-11-02 at 6 50 03 PM" src="https://github.com/user-attachments/assets/38bc3444-1336-4526-b8b9-eaec407b1744" />
 
 ## 🎯 GPIO Control
 
