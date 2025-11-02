@@ -289,7 +289,7 @@ sudo venv/bin/python run.py
 ```
 
 ### Step 3: Test via Dashboard
-1. Open browser: `http://192.168.68.65:5050/gpio`
+1. Open browser: `http://your-pi-ip:5050/gpio`
 2. Toggle LED 1 switch
 3. LED should light up
 4. Toggle off - LED should turn off
@@ -444,7 +444,7 @@ R = 220Ω Resistor
 
 ### Dashboard Web Interface
 ```
-http://192.168.68.65:5050/gpio
+http://your-pi-ip:5050/gpio
 ```
 
 ### Command Line Tests
@@ -615,7 +615,7 @@ I = 5.9mA ✓ Safe!
 
 ## 🔗 Quick Links
 
-- **Dashboard GPIO Page**: http://192.168.68.65:5050/gpio
+- **Dashboard GPIO Page**: http://your-pi-ip:5050/gpio
 - **GPIO API Docs**: [GPIO.md](GPIO.md)
 - **Pin Reference**: [GPIO_PIN_REFERENCE.md](GPIO_PIN_REFERENCE.md)
 - **Raspberry Pi Pinout**: https://pinout.xyz/

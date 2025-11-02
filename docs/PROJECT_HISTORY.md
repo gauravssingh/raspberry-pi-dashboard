@@ -178,7 +178,7 @@ TestingConfig
 
 **Old:** Hardcoded API URL
 ```javascript
-const API_URL = 'http://192.168.68.65:5050';
+const API_URL = '';  // Use relative URLs for portability
 fetch(`${API_URL}/api/stats`);
 ```
 

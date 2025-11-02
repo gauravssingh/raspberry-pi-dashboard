@@ -16,8 +16,8 @@ HOST=0.0.0.0
 PORT=5050
 
 # System Configuration
-# Local IP (auto-detected if not set)
-# LOCAL_IP=192.168.68.65
+# Local IP (auto-detected if not set - override if needed)
+# LOCAL_IP=192.168.1.100
 # HOSTNAME=raspberrypi
 
 # Gunicorn Settings

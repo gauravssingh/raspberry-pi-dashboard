@@ -128,7 +128,7 @@ def main():
         print("✓ All tests passed!")
         print("\nNext steps:")
         print("1. Start the Flask app (with sudo for GPIO access)")
-        print("2. Navigate to http://localhost:5000/gpio")
+        print("2. Navigate to http://localhost:5050/gpio")
         print("3. Test the GPIO controls in the web interface")
     else:
         print("✗ Some tests failed. Please fix the issues above.")

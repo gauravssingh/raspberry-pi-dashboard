@@ -14,9 +14,9 @@ The dashboard automatically detects system configuration at startup:
 
 ### Current Configuration
 
-Your Raspberry Pi is configured with:
-- **IP Address**: `192.168.68.65`
-- **Hostname**: `rpi`
+Your Raspberry Pi configuration is auto-detected:
+- **IP Address**: Detected from network interface (e.g., `192.168.1.100`)
+- **Hostname**: System hostname (e.g., `raspberrypi`)
 
 ---
 
@@ -67,10 +67,10 @@ Response:
 {
   "success": true,
   "config": {
-    "local_ip": "192.168.68.65",
+    "local_ip": "192.168.1.100",  // Example - auto-detected
     "hostname": "rpi",
     "system_config": {
-      "local_ip": "192.168.68.65",
+      "local_ip": "192.168.1.100",  // Example - auto-detected
       "hostname": "rpi",
       "fqdn": "rpi"
     }
@@ -86,7 +86,7 @@ If you need to override the auto-detected values, set environment variables:
 
 ```bash
 # Set in environment
-export LOCAL_IP=192.168.68.65
+export LOCAL_IP=192.168.1.100  # Your Pi's IP
 export HOSTNAME=custom-hostname
 ```
 
@@ -94,7 +94,7 @@ Or add to `.env` file (based on `deploy/environment.example`):
 
 ```bash
 # System Configuration
-LOCAL_IP=192.168.68.65
+LOCAL_IP=192.168.1.100  # Your Pi's IP
 HOSTNAME=raspberrypi
 ```
 
@@ -109,7 +109,7 @@ Optional static configuration file:
 ```json
 {
   "network": {
-    "local_ip": "192.168.68.65",
+    "local_ip": "192.168.1.100",  // Example - auto-detected
     "hostname": "rpi",
     "domain": "local",
     "description": "Raspberry Pi 3B network configuration"
@@ -235,7 +235,7 @@ System configuration detection is logged:
 tail -f logs/app.log | grep "System configured"
 
 # Output:
-# 2025-11-02 08:15:27 [INFO] app: System configured - IP: 192.168.68.65, Hostname: rpi
+# 2025-11-02 08:15:27 [INFO] app: System configured - IP: 192.168.1.100, Hostname: raspberrypi
 ```
 
 ---
@@ -267,7 +267,7 @@ Optional environment variables:
 
 ```bash
 # Override auto-detected IP
-LOCAL_IP=192.168.68.65
+LOCAL_IP=192.168.1.100  # Your Pi's IP
 
 # Override hostname
 HOSTNAME=my-raspberry-pi

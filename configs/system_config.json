@@ -1,9 +1,9 @@
 {
   "network": {
-    "local_ip": "192.168.68.65",
-    "hostname": "rpi",
+    "local_ip": "auto-detected",
+    "hostname": "auto-detected",
     "domain": "local",
-    "description": "Raspberry Pi 3B network configuration"
+    "description": "Raspberry Pi network configuration (auto-detected at runtime)"
   },
   "system": {
     "model": "Raspberry Pi 3B",
