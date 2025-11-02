@@ -1,0 +1,50 @@
+{
+  "pins": [
+    {
+      "id": "gpio_17",
+      "gpio_number": 17,
+      "name": "LED 1",
+      "description": "Primary LED indicator",
+      "type": "led",
+      "direction": "output",
+      "initial_state": "low",
+      "group": "LEDs"
+    },
+    {
+      "id": "gpio_27",
+      "gpio_number": 27,
+      "name": "LED 2",
+      "description": "Secondary LED indicator",
+      "type": "led",
+      "direction": "output",
+      "initial_state": "low",
+      "group": "LEDs"
+    },
+    {
+      "id": "gpio_22",
+      "gpio_number": 22,
+      "name": "Relay 1",
+      "description": "Primary relay control",
+      "type": "relay",
+      "direction": "output",
+      "initial_state": "low",
+      "group": "Relays"
+    },
+    {
+      "id": "gpio_23",
+      "gpio_number": 23,
+      "name": "Relay 2",
+      "description": "Secondary relay control",
+      "type": "relay",
+      "direction": "output",
+      "initial_state": "low",
+      "group": "Relays"
+    }
+  ],
+  "settings": {
+    "chip": "gpiochip0",
+    "consumer": "raspberry-pi-dashboard",
+    "description": "Raspberry Pi 3B - gpiochip0 (54 lines available)"
+  }
+}
+

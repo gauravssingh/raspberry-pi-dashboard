@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Weather & Clocks - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>🌤️ Weather & World Clocks</h1>
+<p class="tagline">Local weather and global time</p>
+
+<div id="error-container" class="error-container"></div>
+
+<!-- Local Time Section -->
+<section class="weather-section">
+  <h2 class="section-title">Local Time</h2>
+  <div class="local-time-card">
+    <div class="time-display">
+      <div class="current-time" id="local-time">--:--:--</div>
+      <div class="current-date" id="local-date">Loading...</div>
+      <div class="timezone-info" id="local-timezone">--</div>
+    </div>
+  </div>
+</section>
+
+<!-- Weather Section -->
+<section class="weather-section">
+  <h2 class="section-title">Local Weather</h2>
+  <div class="loading-message" id="weather-loading">
+    <div class="spinner"></div>
+    <span>Loading weather data...</span>
+  </div>
+  
+  <div id="weather-container" style="display: none;">
+    <div class="weather-card">
+      <div class="weather-header">
+        <div class="weather-location">
+          <span class="location-icon">📍</span>
+          <span id="weather-location">--</span>
+        </div>
+        <div class="weather-updated">
+          Last updated: <span id="weather-updated">--</span>
+        </div>
+      </div>
+      
+      <div class="weather-main">
+        <div class="weather-icon-large" id="weather-icon">🌤️</div>
+        <div class="weather-temp-large">
+          <span id="weather-temp">--</span>°C
+        </div>
+        <div class="weather-description" id="weather-description">--</div>
+      </div>
+      
+      <div class="weather-details">
+        <div class="weather-detail-item">
+          <span class="detail-icon">🌡️</span>
+          <div class="detail-info">
+            <div class="detail-label">Feels Like</div>
+            <div class="detail-value" id="weather-feels-like">--°C</div>
+          </div>
+        </div>
+        
+        <div class="weather-detail-item">
+          <span class="detail-icon">💧</span>
+          <div class="detail-info">
+            <div class="detail-label">Humidity</div>
+            <div class="detail-value" id="weather-humidity">--%</div>
+          </div>
+        </div>
+        
+        <div class="weather-detail-item">
+          <span class="detail-icon">💨</span>
+          <div class="detail-info">
+            <div class="detail-label">Wind Speed</div>
+            <div class="detail-value" id="weather-wind">-- km/h</div>
+          </div>
+        </div>
+        
+        <div class="weather-detail-item">
+          <span class="detail-icon">🔽</span>
+          <div class="detail-info">
+            <div class="detail-label">Pressure</div>
+            <div class="detail-value" id="weather-pressure">-- hPa</div>
+          </div>
+        </div>
+        
+        <div class="weather-detail-item">
+          <span class="detail-icon">👁️</span>
+          <div class="detail-info">
+            <div class="detail-label">Visibility</div>
+            <div class="detail-value" id="weather-visibility">-- km</div>
+          </div>
+        </div>
+        
+        <div class="weather-detail-item">
+          <span class="detail-icon">☁️</span>
+          <div class="detail-info">
+            <div class="detail-label">Cloudiness</div>
+            <div class="detail-value" id="weather-clouds">--%</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="weather-sun">
+        <div class="sun-time">
+          <span class="sun-icon">🌅</span>
+          <div class="sun-info">
+            <div class="sun-label">Sunrise</div>
+            <div class="sun-value" id="weather-sunrise">--:--</div>
+          </div>
+        </div>
+        <div class="sun-time">
+          <span class="sun-icon">🌇</span>
+          <div class="sun-info">
+            <div class="sun-label">Sunset</div>
+            <div class="sun-value" id="weather-sunset">--:--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="weather-error" style="display: none;" class="error-message">
+    Weather data unavailable. Please check your internet connection or weather service configuration.
+  </div>
+</section>
+
+<!-- World Clocks Section -->
+<section class="weather-section">
+  <h2 class="section-title">World Clocks</h2>
+  <div class="loading-message" id="clocks-loading">
+    <div class="spinner"></div>
+    <span>Loading world clocks...</span>
+  </div>
+  
+  <div id="world-clocks-container" style="display: none;">
+    <div class="clocks-grid" id="clocks-grid">
+      <!-- World clocks will be populated here -->
+    </div>
+  </div>
+</section>
+
+<div class="quick-links" style="max-width: 400px;">
+  <a href="{{ url_for('main.index') }}" class="link-card">
+    <span class="link-icon">🏠</span>
+    <div class="link-title">Home</div>
+  </a>
+  <a href="#" class="link-card" onclick="location.reload()">
+    <span class="link-icon">🔄</span>
+    <div class="link-title">Refresh</div>
+  </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/weather.js') }}"></script>
+{% endblock %}
+

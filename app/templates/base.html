@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Raspberry Pi Dashboard{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <div class="logo">
+    <img src="{{ url_for('static', filename='img/pi-mascot.png') }}" alt="Raspberry Pi Mascot" class="pi-logo">
+  </div>
+  
+  {% block content %}{% endblock %}
+  
+  <div class="footer">Powered by Raspberry Pi • Built with ❤️</div>
+  
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
+

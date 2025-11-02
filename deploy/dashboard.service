@@ -1,0 +1,36 @@
+[Unit]
+Description=Raspberry Pi Dashboard - Flask Web Application
+Documentation=https://github.com/yourusername/dashboard
+After=network.target
+
+[Service]
+Type=notify
+User=gauravs
+Group=gauravs
+WorkingDirectory=/home/gauravs/dashboard
+Environment="PATH=/home/gauravs/dashboard/venv/bin"
+Environment="FLASK_ENV=production"
+
+# Gunicorn command
+ExecStart=/home/gauravs/dashboard/venv/bin/gunicorn -c gunicorn_config.py wsgi:app
+
+# Restart policy
+Restart=always
+RestartSec=10
+
+# Resource limits for Raspberry Pi 3B (1GB RAM)
+MemoryMax=400M
+CPUQuota=80%
+
+# Security hardening (optional but recommended)
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=dashboard
+
+[Install]
+WantedBy=multi-user.target
+

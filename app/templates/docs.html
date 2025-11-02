@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}Documentation - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>📖 Documentation</h1>
+<p class="tagline">Help and API reference</p>
+
+<div id="error-container" class="error-container"></div>
+
+<!-- Quick Links -->
+<section class="docs-section">
+  <h2 class="section-title">Quick Navigation</h2>
+  <div class="docs-nav">
+    <button class="docs-nav-btn active" onclick="showSection('getting-started')">
+      <span class="nav-icon">🚀</span>
+      <span class="nav-text">Getting Started</span>
+    </button>
+    <button class="docs-nav-btn" onclick="showSection('api-reference')">
+      <span class="nav-icon">🔌</span>
+      <span class="nav-text">API Reference</span>
+    </button>
+    <button class="docs-nav-btn" onclick="showSection('features')">
+      <span class="nav-icon">✨</span>
+      <span class="nav-text">Features</span>
+    </button>
+    <button class="docs-nav-btn" onclick="showSection('troubleshooting')">
+      <span class="nav-icon">🔧</span>
+      <span class="nav-text">Troubleshooting</span>
+    </button>
+  </div>
+</section>
+
+<!-- Getting Started Section -->
+<section id="section-getting-started" class="docs-content-section">
+  <h2 class="section-title">🚀 Getting Started</h2>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Welcome to Raspberry Pi Dashboard</h3>
+    <p>This dashboard provides a modern, mobile-friendly interface for monitoring and controlling your Raspberry Pi.</p>
+    
+    <h4>Key Features:</h4>
+    <ul class="docs-list">
+      <li><strong>Real-time System Monitoring</strong> - CPU, memory, disk, and temperature</li>
+      <li><strong>Service Management</strong> - Monitor Raspotify, Shairport Sync, and more</li>
+      <li><strong>Network Information</strong> - WiFi details, IP addresses, connection stats</li>
+      <li><strong>System Tools</strong> - Diagnostics, terminal access, log viewer</li>
+      <li><strong>Weather & Clocks</strong> - Local weather and world time zones</li>
+    </ul>
+    
+    <h4>Navigation:</h4>
+    <ul class="docs-list">
+      <li><strong>Dashboard</strong> - System overview and quick stats</li>
+      <li><strong>Services</strong> - Audio service status and control</li>
+      <li><strong>Configuration</strong> - Network and system information</li>
+      <li><strong>Tools</strong> - System actions and diagnostics</li>
+      <li><strong>Logs</strong> - Real-time log viewer</li>
+      <li><strong>Weather</strong> - Weather forecast and world clocks</li>
+      <li><strong>Settings</strong> - Customize your dashboard</li>
+    </ul>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">First Time Setup</h3>
+    <ol class="docs-list">
+      <li>Access the dashboard at <code>http://your-pi-ip:5050</code></li>
+      <li>Check the <strong>Configuration</strong> page to verify network settings</li>
+      <li>Visit <strong>Settings</strong> to customize theme and preferences</li>
+      <li>Explore <strong>Services</strong> to see running audio services</li>
+      <li>Use <strong>Tools</strong> for system diagnostics</li>
+    </ol>
+  </div>
+</section>
+
+<!-- API Reference Section -->
+<section id="section-api-reference" class="docs-content-section" style="display: none;">
+  <h2 class="section-title">🔌 API Reference</h2>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">System API</h3>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/system/stats</div>
+      <div class="api-description">Get system statistics (CPU, memory, disk)</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/system/system-info</div>
+      <div class="api-description">Get system information (hostname, model, OS)</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/system/network</div>
+      <div class="api-description">Get network interfaces and WiFi signal</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/system/weather</div>
+      <div class="api-description">Get local weather data (cached 10 min)</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/system/world-clocks</div>
+      <div class="api-description">Get time in multiple timezones</div>
+    </div>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Services API</h3>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/services/list</div>
+      <div class="api-description">List all available services</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/services/raspotify/status</div>
+      <div class="api-description">Get Raspotify service status</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/services/raspotify/current</div>
+      <div class="api-description">Get currently playing track</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/services/shairport-sync/status</div>
+      <div class="api-description">Get Shairport Sync status</div>
+    </div>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Tools API</h3>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/tools/diagnostics</div>
+      <div class="api-description">Run system diagnostics</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">POST</div>
+      <div class="api-path">/api/tools/execute</div>
+      <div class="api-description">Execute terminal command (whitelisted)</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">POST</div>
+      <div class="api-path">/api/tools/action/{action}</div>
+      <div class="api-description">Execute system action (reboot, shutdown, etc.)</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/tools/logs/{service}</div>
+      <div class="api-description">Get service logs</div>
+    </div>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Logs API</h3>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/logs/services</div>
+      <div class="api-description">List available services for log viewing</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/logs/view/{service}</div>
+      <div class="api-description">View logs for a service</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/logs/errors</div>
+      <div class="api-description">Get recent error logs</div>
+    </div>
+    <div class="api-endpoint">
+      <div class="api-method">GET</div>
+      <div class="api-path">/api/logs/search?query={text}</div>
+      <div class="api-description">Search logs</div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="section-features" class="docs-content-section" style="display: none;">
+  <h2 class="section-title">✨ Features</h2>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">📊 Dashboard Features</h3>
+    <ul class="docs-list">
+      <li><strong>Live Statistics</strong> - Real-time system stats updated every 5 seconds</li>
+      <li><strong>CPU Temperature</strong> - Monitor temperature with visual indicators</li>
+      <li><strong>Memory & Disk Usage</strong> - Progress bars with percentage display</li>
+      <li><strong>System Uptime</strong> - Track how long your Pi has been running</li>
+      <li><strong>Responsive Design</strong> - Works on desktop, tablet, and mobile</li>
+    </ul>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">🎵 Service Management</h3>
+    <ul class="docs-list">
+      <li><strong>Raspotify</strong> - Spotify Connect integration with now playing</li>
+      <li><strong>Shairport Sync</strong> - AirPlay receiver status</li>
+      <li><strong>Service Status</strong> - Active/inactive indicators</li>
+      <li><strong>Device Names</strong> - View configured device names</li>
+    </ul>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">🔧 System Tools</h3>
+    <ul class="docs-list">
+      <li><strong>System Actions</strong> - Reboot, shutdown, restart services</li>
+      <li><strong>Diagnostics</strong> - Comprehensive system health checks</li>
+      <li><strong>Terminal</strong> - Execute whitelisted commands safely</li>
+      <li><strong>Log Viewer</strong> - Quick access to service logs</li>
+    </ul>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">⚙️ Customization</h3>
+    <ul class="docs-list">
+      <li><strong>Theme Toggle</strong> - Light, dark, or auto mode</li>
+      <li><strong>Accent Colors</strong> - Choose your preferred color scheme</li>
+      <li><strong>Refresh Intervals</strong> - Customize update frequency</li>
+      <li><strong>Widget Visibility</strong> - Show/hide dashboard components</li>
+      <li><strong>Settings Export</strong> - Backup and restore preferences</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Troubleshooting Section -->
+<section id="section-troubleshooting" class="docs-content-section" style="display: none;">
+  <h2 class="section-title">🔧 Troubleshooting</h2>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Dashboard Not Loading</h3>
+    <p><strong>Problem:</strong> Can't access the dashboard</p>
+    <p><strong>Solutions:</strong></p>
+    <ol class="docs-list">
+      <li>Check if Flask is running: <code>ps aux | grep python</code></li>
+      <li>Verify port 5050 is open: <code>sudo netstat -tlnp | grep 5050</code></li>
+      <li>Check service status: <code>sudo systemctl status dashboard</code></li>
+      <li>View logs: <code>sudo journalctl -u dashboard -n 50</code></li>
+      <li>Restart service: <code>sudo systemctl restart dashboard</code></li>
+    </ol>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Stats Not Updating</h3>
+    <p><strong>Problem:</strong> Dashboard loads but statistics don't update</p>
+    <p><strong>Solutions:</strong></p>
+    <ol class="docs-list">
+      <li>Check browser console for JavaScript errors (F12)</li>
+      <li>Test API manually: <code>curl http://localhost:5050/api/system/health</code></li>
+      <li>Clear browser cache and reload</li>
+      <li>Check network connectivity</li>
+    </ol>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Service Not Showing</h3>
+    <p><strong>Problem:</strong> Raspotify or Shairport not appearing</p>
+    <p><strong>Solutions:</strong></p>
+    <ol class="docs-list">
+      <li>Check if service is installed: <code>systemctl list-units | grep raspotify</code></li>
+      <li>Verify service is running: <code>systemctl status raspotify</code></li>
+      <li>Start service: <code>sudo systemctl start raspotify</code></li>
+    </ol>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Weather Not Loading</h3>
+    <p><strong>Problem:</strong> Weather data unavailable</p>
+    <p><strong>Solutions:</strong></p>
+    <ol class="docs-list">
+      <li>Check internet connectivity: <code>ping -c 3 google.com</code></li>
+      <li>Verify weather API configuration in system_monitor.py</li>
+      <li>Check API endpoint: <code>curl http://localhost:5050/api/system/weather</code></li>
+    </ol>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Permission Errors</h3>
+    <p><strong>Problem:</strong> System actions fail with permission errors</p>
+    <p><strong>Solutions:</strong></p>
+    <ol class="docs-list">
+      <li>Ensure dashboard user has sudo privileges for specific commands</li>
+      <li>Check sudoers configuration: <code>sudo visudo</code></li>
+      <li>Add passwordless sudo for dashboard user (see deployment docs)</li>
+    </ol>
+  </div>
+  
+  <div class="docs-card">
+    <h3 class="docs-subtitle">Getting Help</h3>
+    <p>If you continue to experience issues:</p>
+    <ol class="docs-list">
+      <li>Check system logs: <code>sudo journalctl -xe</code></li>
+      <li>View application logs in the Logs page</li>
+      <li>Run diagnostics from the Tools page</li>
+      <li>Check the README.md for more documentation</li>
+    </ol>
+  </div>
+</section>
+
+<div class="quick-links" style="max-width: 400px;">
+  <a href="{{ url_for('main.index') }}" class="link-card">
+    <span class="link-icon">🏠</span>
+    <div class="link-title">Home</div>
+  </a>
+  <a href="{{ url_for('main.settings') }}" class="link-card">
+    <span class="link-icon">⚙️</span>
+    <div class="link-title">Settings</div>
+  </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/docs.js') }}"></script>
+{% endblock %}
+

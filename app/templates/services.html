@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Services - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>Services</h1>
+<p class="tagline">Monitor and control your Pi services</p>
+
+<div id="error-container" class="error-container"></div>
+
+<div id="services-container" style="max-width: 800px; margin: 2rem auto;">
+  <!-- Services will be loaded here by JavaScript -->
+  <div class="service-card">
+    <div class="service-info">Loading services...</div>
+  </div>
+</div>
+
+<div class="quick-links" style="max-width: 400px;">
+  <a href="{{ url_for('main.index') }}" class="link-card"><span class="link-icon">🏠</span><div class="link-title">Home</div></a>
+  <a href="{{ url_for('main.services') }}" class="link-card"><span class="link-icon">🔄</span><div class="link-title">Refresh</div></a>
+</div>
+{% endblock %}
+

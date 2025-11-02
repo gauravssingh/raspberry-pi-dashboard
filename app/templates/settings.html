@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>⚙️ Settings</h1>
+<p class="tagline">Customize your dashboard experience</p>
+
+<div id="error-container" class="error-container"></div>
+<div id="success-container" class="success-container"></div>
+
+<!-- Appearance Section -->
+<section class="settings-section">
+  <h2 class="section-title">Appearance</h2>
+  <div class="settings-grid">
+    <div class="setting-card">
+      <div class="setting-header">
+        <span class="setting-icon">🌓</span>
+        <h3 class="setting-title">Theme</h3>
+      </div>
+      <div class="setting-content">
+        <p class="setting-description">Choose your preferred color theme</p>
+        <div class="theme-selector">
+          <button class="theme-option" data-theme="light" onclick="setTheme('light')">
+            <span class="theme-icon">☀️</span>
+            <span class="theme-name">Light</span>
+          </button>
+          <button class="theme-option active" data-theme="dark" onclick="setTheme('dark')">
+            <span class="theme-icon">🌙</span>
+            <span class="theme-name">Dark</span>
+          </button>
+          <button class="theme-option" data-theme="auto" onclick="setTheme('auto')">
+            <span class="theme-icon">🔄</span>
+            <span class="theme-name">Auto</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="setting-card">
+      <div class="setting-header">
+        <span class="setting-icon">🎨</span>
+        <h3 class="setting-title">Accent Color</h3>
+      </div>
+      <div class="setting-content">
+        <p class="setting-description">Choose your accent color</p>
+        <div class="color-selector">
+          <button class="color-option" data-color="blue" style="background: #007bff" onclick="setAccentColor('blue')"></button>
+          <button class="color-option" data-color="purple" style="background: #6f42c1" onclick="setAccentColor('purple')"></button>
+          <button class="color-option" data-color="green" style="background: #28a745" onclick="setAccentColor('green')"></button>
+          <button class="color-option" data-color="red" style="background: #dc3545" onclick="setAccentColor('red')"></button>
+          <button class="color-option" data-color="orange" style="background: #fd7e14" onclick="setAccentColor('orange')"></button>
+          <button class="color-option" data-color="pink" style="background: #e83e8c" onclick="setAccentColor('pink')"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard Customization Section -->
+<section class="settings-section">
+  <h2 class="section-title">Dashboard Customization</h2>
+  <div class="settings-grid">
+    <div class="setting-card">
+      <div class="setting-header">
+        <span class="setting-icon">🔄</span>
+        <h3 class="setting-title">Refresh Interval</h3>
+      </div>
+      <div class="setting-content">
+        <p class="setting-description">How often to update statistics</p>
+        <select id="refresh-interval" class="setting-select" onchange="setRefreshInterval(this.value)">
+          <option value="3">3 seconds</option>
+          <option value="5" selected>5 seconds</option>
+          <option value="10">10 seconds</option>
+          <option value="30">30 seconds</option>
+          <option value="60">1 minute</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="setting-card">
+      <div class="setting-header">
+        <span class="setting-icon">📊</span>
+        <h3 class="setting-title">Visible Widgets</h3>
+      </div>
+      <div class="setting-content">
+        <p class="setting-description">Toggle dashboard widgets</p>
+        <div class="toggle-list">
+          <label class="toggle-item">
+            <input type="checkbox" checked onchange="toggleWidget('uptime')">
+            <span class="toggle-label">System Uptime</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" checked onchange="toggleWidget('cpu')">
+            <span class="toggle-label">CPU & Temperature</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" checked onchange="toggleWidget('memory')">
+            <span class="toggle-label">Memory Usage</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" checked onchange="toggleWidget('disk')">
+            <span class="toggle-label">Disk Usage</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Notifications Section -->
+<section class="settings-section">
+  <h2 class="section-title">Notifications</h2>
+  <div class="settings-grid">
+    <div class="setting-card">
+      <div class="setting-header">
+        <span class="setting-icon">🔔</span>
+        <h3 class="setting-title">Alert Preferences</h3>
+      </div>
+      <div class="setting-content">
+        <p class="setting-description">Configure system alerts</p>
+        <div class="toggle-list">
+          <label class="toggle-item">
+            <input type="checkbox" checked onchange="toggleNotification('high-cpu')">
+            <span class="toggle-label">High CPU Usage (>80%)</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" checked onchange="toggleNotification('high-temp')">
+            <span class="toggle-label">High Temperature (>70°C)</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" checked onchange="toggleNotification('low-disk')">
+            <span class="toggle-label">Low Disk Space (<10%)</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" onchange="toggleNotification('service-down')">
+            <span class="toggle-label">Service Down</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="setting-card">
+      <div class="setting-header">
+        <span class="setting-icon">📢</span>
+        <h3 class="setting-title">Notification Method</h3>
+      </div>
+      <div class="setting-content">
+        <p class="setting-description">How to receive alerts</p>
+        <div class="toggle-list">
+          <label class="toggle-item">
+            <input type="checkbox" checked onchange="toggleNotificationMethod('browser')">
+            <span class="toggle-label">Browser Notifications</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" onchange="toggleNotificationMethod('sound')">
+            <span class="toggle-label">Sound Alerts</span>
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" onchange="toggleNotificationMethod('email')">
+            <span class="toggle-label">Email Notifications</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Data & Privacy Section -->
+<section class="settings-section">
+  <h2 class="section-title">Data & Storage</h2>
+  <div class="settings-grid">
+    <div class="setting-card">
+      <div class="setting-header">
+        <span class="setting-icon">💾</span>
+        <h3 class="setting-title">Local Storage</h3>
+      </div>
+      <div class="setting-content">
+        <p class="setting-description">Manage stored preferences</p>
+        <div class="storage-info">
+          <div class="storage-item">
+            <span class="storage-label">Used:</span>
+            <span id="storage-used" class="storage-value">0 KB</span>
+          </div>
+        </div>
+        <button class="btn-danger" onclick="clearSettings()">
+          <span class="btn-icon">🗑️</span> Clear All Settings
+        </button>
+      </div>
+    </div>
+    
+    <div class="setting-card">
+      <div class="setting-header">
+        <span class="setting-icon">📥</span>
+        <h3 class="setting-title">Export/Import</h3>
+      </div>
+      <div class="setting-content">
+        <p class="setting-description">Backup or restore your settings</p>
+        <div class="button-group">
+          <button class="btn-secondary" onclick="exportSettings()">
+            <span class="btn-icon">📤</span> Export Settings
+          </button>
+          <button class="btn-secondary" onclick="document.getElementById('import-file').click()">
+            <span class="btn-icon">📥</span> Import Settings
+          </button>
+          <input type="file" id="import-file" accept=".json" style="display: none" onchange="importSettings(this)">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="settings-section">
+  <h2 class="section-title">About</h2>
+  <div class="settings-grid">
+    <div class="setting-card">
+      <div class="setting-header">
+        <span class="setting-icon">ℹ️</span>
+        <h3 class="setting-title">Dashboard Info</h3>
+      </div>
+      <div class="setting-content">
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">Version:</span>
+            <span class="info-value">1.0.0</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Platform:</span>
+            <span class="info-value">Raspberry Pi</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Framework:</span>
+            <span class="info-value">Flask</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="quick-links" style="max-width: 400px;">
+  <a href="{{ url_for('main.index') }}" class="link-card">
+    <span class="link-icon">🏠</span>
+    <div class="link-title">Home</div>
+  </a>
+  <a href="{{ url_for('main.docs') }}" class="link-card">
+    <span class="link-icon">📖</span>
+    <div class="link-title">Documentation</div>
+  </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}
+

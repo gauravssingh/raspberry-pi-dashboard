@@ -1,0 +1,56 @@
+# Environment Variables Template
+# 
+# Usage:
+#   1. Copy this file: cp deploy/environment.example .env
+#   2. Update values with your settings
+#   3. Keep .env file secure and don't commit it to git
+#   4. Reference in systemd service or load in app
+
+# Flask Configuration
+FLASK_ENV=production
+SECRET_KEY=change-this-to-a-random-secret-key
+
+# Application Settings
+DEBUG=False
+HOST=0.0.0.0
+PORT=5050
+
+# System Configuration
+# Local IP (auto-detected if not set)
+# LOCAL_IP=192.168.68.65
+# HOSTNAME=raspberrypi
+
+# Gunicorn Settings
+WORKERS=2
+WORKER_CLASS=sync
+TIMEOUT=30
+MAX_REQUESTS=1000
+
+# Database (if you add one in the future)
+# DATABASE_URL=postgresql://user:pass@localhost/dashboard
+
+# External Services
+# Weather API (if you want to use a custom API)
+# WEATHER_API_KEY=your_api_key_here
+# WEATHER_LOCATION=Mumbai
+
+# Spotify API (for advanced Raspotify features)
+# SPOTIFY_CLIENT_ID=your_client_id
+# SPOTIFY_CLIENT_SECRET=your_client_secret
+# SPOTIFY_REDIRECT_URI=http://your-pi-ip:5050/callback
+
+# Security
+# ALLOWED_HOSTS=raspberrypi.local,yourdomain.com
+
+# Logging
+LOG_LEVEL=INFO
+LOG_FILE=/var/log/dashboard/app.log
+
+# Resource Limits
+MAX_MEMORY_MB=400
+CPU_QUOTA=80
+
+# Custom Settings (add your own)
+# CUSTOM_FEATURE_ENABLED=true
+# CUSTOM_API_ENDPOINT=http://example.com/api
+

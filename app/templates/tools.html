@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Tools - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>🔧 Tools</h1>
+<p class="tagline">System actions and diagnostics</p>
+
+<div id="error-container" class="error-container"></div>
+
+<!-- System Actions Section -->
+<section class="tools-section">
+  <h2 class="section-title">System Actions</h2>
+  <div class="actions-grid">
+    <div class="action-card" data-action="restart_dashboard">
+      <div class="action-icon">🔃</div>
+      <div class="action-name">Restart Dashboard</div>
+      <button class="action-btn" onclick="performAction('restart_dashboard')">Execute</button>
+    </div>
+    <div class="action-card" data-action="restart_raspotify">
+      <div class="action-icon">🎵</div>
+      <div class="action-name">Restart Raspotify</div>
+      <button class="action-btn" onclick="performAction('restart_raspotify')">Execute</button>
+    </div>
+    <div class="action-card" data-action="restart_shairport">
+      <div class="action-icon">📡</div>
+      <div class="action-name">Restart Shairport</div>
+      <button class="action-btn" onclick="performAction('restart_shairport')">Execute</button>
+    </div>
+    <div class="action-card dangerous" data-action="reboot">
+      <div class="action-icon">🔄</div>
+      <div class="action-name">Reboot System</div>
+      <button class="action-btn dangerous" onclick="performAction('reboot', true)">Execute</button>
+    </div>
+    <div class="action-card dangerous" data-action="shutdown">
+      <div class="action-icon">⚡</div>
+      <div class="action-name">Shutdown</div>
+      <button class="action-btn dangerous" onclick="performAction('shutdown', true)">Execute</button>
+    </div>
+  </div>
+</section>
+
+<!-- Diagnostics Section -->
+<section class="tools-section">
+  <h2 class="section-title">System Diagnostics</h2>
+  <button class="btn-primary" onclick="runDiagnostics()">
+    <span class="btn-icon">🔍</span> Run Diagnostics
+  </button>
+  
+  <div id="diagnostics-results" style="display: none; margin-top: 1.5rem;">
+    <div class="diagnostics-grid">
+      <!-- System Health -->
+      <div class="diagnostic-card">
+        <h3 class="diagnostic-title">System Health</h3>
+        <div id="diag-system" class="diagnostic-content">
+          <div class="diagnostic-item">
+            <span class="diagnostic-label">Status:</span>
+            <span id="diag-system-status" class="diagnostic-value">--</span>
+          </div>
+          <div class="diagnostic-item">
+            <span class="diagnostic-label">Load Average:</span>
+            <span id="diag-system-load" class="diagnostic-value">--</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Services -->
+      <div class="diagnostic-card">
+        <h3 class="diagnostic-title">Services</h3>
+        <div id="diag-services" class="diagnostic-content">
+          <!-- Will be populated by JS -->
+        </div>
+      </div>
+      
+      <!-- Connectivity -->
+      <div class="diagnostic-card">
+        <h3 class="diagnostic-title">Connectivity</h3>
+        <div id="diag-connectivity" class="diagnostic-content">
+          <div class="diagnostic-item">
+            <span class="diagnostic-label">Internet:</span>
+            <span id="diag-internet" class="diagnostic-value">--</span>
+          </div>
+          <div class="diagnostic-item">
+            <span class="diagnostic-label">DNS:</span>
+            <span id="diag-dns" class="diagnostic-value">--</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Storage -->
+      <div class="diagnostic-card">
+        <h3 class="diagnostic-title">Storage</h3>
+        <div id="diag-storage" class="diagnostic-content">
+          <div class="diagnostic-item">
+            <span class="diagnostic-label">Total:</span>
+            <span id="diag-storage-total" class="diagnostic-value">--</span>
+          </div>
+          <div class="diagnostic-item">
+            <span class="diagnostic-label">Used:</span>
+            <span id="diag-storage-used" class="diagnostic-value">--</span>
+          </div>
+          <div class="diagnostic-item">
+            <span class="diagnostic-label">Available:</span>
+            <span id="diag-storage-avail" class="diagnostic-value">--</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Terminal Section -->
+<section class="tools-section">
+  <h2 class="section-title">Terminal</h2>
+  <div class="terminal-container">
+    <div class="terminal-input-group">
+      <input type="text" id="terminal-input" class="terminal-input" 
+             placeholder="Enter command (e.g., uptime, df -h, systemctl status dashboard)">
+      <button class="btn-primary" onclick="executeCommand()">
+        <span class="btn-icon">▶</span> Execute
+      </button>
+    </div>
+    <div id="terminal-output" class="terminal-output">
+      <div class="terminal-welcome">
+        Terminal ready. Enter a command above to execute.
+        <br>Allowed commands: uptime, date, df, free, ps, systemctl status, journalctl, and more.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Service Logs Quick View -->
+<section class="tools-section">
+  <h2 class="section-title">Quick Log View</h2>
+  <div class="log-selector">
+    <select id="service-selector" class="service-select">
+      <option value="dashboard">Dashboard</option>
+      <option value="raspotify">Raspotify</option>
+      <option value="shairport-sync">Shairport Sync</option>
+      <option value="nginx">Nginx</option>
+      <option value="ssh">SSH</option>
+      <option value="system">System</option>
+    </select>
+    <button class="btn-primary" onclick="loadServiceLogs()">
+      <span class="btn-icon">📋</span> Load Logs
+    </button>
+  </div>
+  <div id="quick-logs" class="logs-container" style="display: none;">
+    <pre id="logs-content" class="logs-content"></pre>
+  </div>
+</section>
+
+<div class="quick-links" style="max-width: 600px;">
+  <a href="{{ url_for('main.index') }}" class="link-card">
+    <span class="link-icon">🏠</span>
+    <div class="link-title">Home</div>
+  </a>
+  <a href="{{ url_for('main.logs') }}" class="link-card">
+    <span class="link-icon">📋</span>
+    <div class="link-title">Full Logs</div>
+  </a>
+  <a href="{{ url_for('main.settings') }}" class="link-card">
+    <span class="link-icon">⚙️</span>
+    <div class="link-title">Settings</div>
+  </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/tools.js') }}"></script>
+{% endblock %}
+

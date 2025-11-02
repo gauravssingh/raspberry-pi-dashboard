@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Raspberry Pi - Welcome{% endblock %}
+
+{% block content %}
+<h1>System Command Center</h1>
+<p class="tagline"><span class="pulse"></span>Your pocket computer is ready</p>
+
+<div id="error-container" class="error-container"></div>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="stat-icon">⏱️</div>
+    <div class="stat-value" id="uptime">--</div>
+    <div class="stat-label">System Uptime</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🖥️</div>
+    <div class="stat-value" id="cpu-temp">--°C</div>
+    <div class="stat-label">CPU Temp</div>
+    <div class="stat-detail" id="cpu-usage">CPU: --%</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🧠</div>
+    <div class="stat-value" id="memory-percent">--%</div>
+    <div class="stat-label">Memory</div>
+    <div class="stat-detail" id="memory-detail">-- / -- GB</div>
+    <div class="progress-bar"><div class="progress-fill" id="memory-progress"></div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">💽</div>
+    <div class="stat-value" id="disk-percent">--%</div>
+    <div class="stat-label">Disk</div>
+    <div class="stat-detail" id="disk-detail">-- / -- GB</div>
+    <div class="progress-bar"><div class="progress-fill" id="disk-progress"></div></div>
+  </div>
+</div>
+
+<div class="quick-links">
+  <a href="{{ url_for('main.index') }}" class="link-card"><span class="link-icon">📊</span><div class="link-title">Dashboard</div></a>
+  <a href="{{ url_for('main.services') }}" class="link-card"><span class="link-icon">🎵</span><div class="link-title">Services</div></a>
+  <a href="{{ url_for('main.gpio') }}" class="link-card"><span class="link-icon">⚡</span><div class="link-title">GPIO Control</div></a>
+  <a href="{{ url_for('main.configuration') }}" class="link-card"><span class="link-icon">⚙️</span><div class="link-title">Configuration</div></a>
+  <a href="{{ url_for('main.tools') }}" class="link-card"><span class="link-icon">🔧</span><div class="link-title">Tools</div></a>
+  <a href="{{ url_for('main.weather') }}" class="link-card"><span class="link-icon">🌤️</span><div class="link-title">Weather</div></a>
+  <a href="{{ url_for('main.logs') }}" class="link-card"><span class="link-icon">📋</span><div class="link-title">Logs</div></a>
+  <a href="{{ url_for('main.settings') }}" class="link-card"><span class="link-icon">⚙️</span><div class="link-title">Settings</div></a>
+  <a href="{{ url_for('main.docs') }}" class="link-card"><span class="link-icon">📖</span><div class="link-title">Docs</div></a>
+</div>
+{% endblock %}
+

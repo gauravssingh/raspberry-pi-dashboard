@@ -1,0 +1,2027 @@
+{% extends "base.html" %}
+
+{% block title %}GPIO Wiring Guide - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>GPIO Wiring Guide</h1>
+<p class="tagline">Step-by-step breadboard setup for LED testing</p>
+
+<div style="max-width: 1200px; margin: 2rem auto;">
+  
+  <!-- Components Needed -->
+  <div class="wiring-section">
+    <h2 class="section-title">🛠️ Components Needed</h2>
+    <div class="components-grid">
+      <div class="component-card">
+        <div class="component-icon">🍞</div>
+        <div class="component-name">Breadboard</div>
+        <div class="component-detail">400 or 830 points</div>
+      </div>
+      <div class="component-card">
+        <div class="component-icon">💡</div>
+        <div class="component-name">LEDs x4</div>
+        <div class="component-detail">Any color</div>
+      </div>
+      <div class="component-card">
+        <div class="component-icon">⚡</div>
+        <div class="component-name">220Ω Resistors x4</div>
+        <div class="component-detail">Red-Red-Brown</div>
+      </div>
+      <div class="component-card">
+        <div class="component-icon">🔌</div>
+        <div class="component-name">Jumper Wires</div>
+        <div class="component-detail">M-F or M-M + F-M</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resistor Color Code Guide -->
+  <div class="wiring-section">
+    <h2 class="section-title">⚡ Identifying Resistors by Color Bands</h2>
+    <div class="resistor-guide">
+      <div class="resistor-explanation">
+        <p style="color: #bbb; margin-bottom: 1.5rem;">Resistors use color bands to indicate their resistance value. Read from left to right.</p>
+      </div>
+      
+      <div class="resistor-visual-container">
+        <div class="resistor-example">
+          <h3 style="color: #f39c12; margin-bottom: 1rem;">220Ω Resistor (Recommended)</h3>
+          <div class="resistor-body">
+            <div class="resistor-band" style="background: #ff0000;">
+              <div class="band-label">Red<br>=2</div>
+            </div>
+            <div class="resistor-band" style="background: #ff0000;">
+              <div class="band-label">Red<br>=2</div>
+            </div>
+            <div class="resistor-band" style="background: #8b4513;">
+              <div class="band-label">Brown<br>=×10</div>
+            </div>
+            <div class="resistor-band tolerance" style="background: #ffd700;">
+              <div class="band-label">Gold<br>±5%</div>
+            </div>
+          </div>
+          <div class="resistor-calculation">
+            <strong>Calculation:</strong> 2, 2, ×10 = 22 × 10 = <strong>220Ω</strong>
+          </div>
+        </div>
+
+        <div class="resistor-example">
+          <h3 style="color: #3498db; margin-bottom: 1rem;">Alternative: 330Ω Resistor</h3>
+          <div class="resistor-body">
+            <div class="resistor-band" style="background: #ff6600;">
+              <div class="band-label">Orange<br>=3</div>
+            </div>
+            <div class="resistor-band" style="background: #ff6600;">
+              <div class="band-label">Orange<br>=3</div>
+            </div>
+            <div class="resistor-band" style="background: #8b4513;">
+              <div class="band-label">Brown<br>=×10</div>
+            </div>
+            <div class="resistor-band tolerance" style="background: #ffd700;">
+              <div class="band-label">Gold<br>±5%</div>
+            </div>
+          </div>
+          <div class="resistor-calculation">
+            <strong>Calculation:</strong> 3, 3, ×10 = 33 × 10 = <strong>330Ω</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="color-code-table">
+        <h3 style="color: #3498db; margin: 2rem 0 1rem;">Color Code Reference</h3>
+        <div class="color-table-grid">
+          <div class="color-row">
+            <div class="color-swatch" style="background: #000;">Black</div>
+            <div class="color-value">0</div>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" style="background: #8b4513; color: #fff;">Brown</div>
+            <div class="color-value">1 (or ×10)</div>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" style="background: #ff0000;">Red</div>
+            <div class="color-value">2 (or ×100)</div>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" style="background: #ff6600;">Orange</div>
+            <div class="color-value">3 (or ×1K)</div>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" style="background: #ffff00;">Yellow</div>
+            <div class="color-value">4 (or ×10K)</div>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" style="background: #00ff00;">Green</div>
+            <div class="color-value">5 (or ×100K)</div>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" style="background: #0000ff;">Blue</div>
+            <div class="color-value">6 (or ×1M)</div>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" style="background: #ee82ee;">Violet</div>
+            <div class="color-value">7</div>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" style="background: #808080;">Gray</div>
+            <div class="color-value">8</div>
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" style="background: #ffffff; color: #000;">White</div>
+            <div class="color-value">9</div>
+          </div>
+        </div>
+        <div class="color-note">
+          <strong>Note:</strong> Gold band (4th band) = ±5% tolerance, Silver = ±10% tolerance
+        </div>
+      </div>
+
+      <div class="safe-resistors">
+        <h3 style="color: #2ecc71; margin: 2rem 0 1rem;">✅ Safe Resistor Values for LEDs</h3>
+        <div class="resistor-options">
+          <div class="resistor-option recommended">
+            <div class="option-value">220Ω</div>
+            <div class="option-colors">Red-Red-Brown</div>
+            <div class="option-note">Recommended - Good brightness</div>
+          </div>
+          <div class="resistor-option">
+            <div class="option-value">330Ω</div>
+            <div class="option-colors">Orange-Orange-Brown</div>
+            <div class="option-note">Very safe - Dimmer</div>
+          </div>
+          <div class="resistor-option">
+            <div class="option-value">470Ω</div>
+            <div class="option-colors">Yellow-Violet-Brown</div>
+            <div class="option-note">Ultra safe - More dim</div>
+          </div>
+          <div class="resistor-option">
+            <div class="option-value">1kΩ</div>
+            <div class="option-colors">Brown-Black-Red</div>
+            <div class="option-note">Very dim but safest</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LED Polarity Guide -->
+  <div class="wiring-section">
+    <h2 class="section-title">💡 LED Polarity - IMPORTANT!</h2>
+    <div class="polarity-guide">
+      <div class="led-diagram">
+        <div class="led-visual">
+          <div class="led-body">
+            <div class="led-leg led-long">
+              <div class="led-label">Long Leg<br>Anode (+)</div>
+            </div>
+            <div class="led-bulb">LED</div>
+            <div class="led-leg led-short">
+              <div class="led-label">Short Leg<br>Cathode (-)</div>
+            </div>
+          </div>
+        </div>
+        <div class="led-notes">
+          <div class="note-item">✓ <strong>Long leg</strong> = Anode (+) = to GPIO/Resistor</div>
+          <div class="note-item">✓ <strong>Short leg</strong> = Cathode (-) = to GND</div>
+          <div class="note-item">✓ <strong>Flat edge</strong> on body = Cathode side</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GPIO Pin Reference -->
+  <div class="wiring-section">
+    <h2 class="section-title">📍 GPIO Pins - Raspberry Pi 3B (40-Pin Header)</h2>
+    <div class="pinout-container">
+      <div class="pinout-grid">
+        <div class="pin-row">
+          <div class="pin power">1<br>3.3V</div>
+          <div class="pin power">2<br>5V</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin i2c">3<br>GPIO2</div>
+          <div class="pin power">4<br>5V</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin i2c">5<br>GPIO3</div>
+          <div class="pin ground">6<br>GND<br>⭐</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin gpio">7<br>GPIO4</div>
+          <div class="pin uart">8<br>GPIO14</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin ground">9<br>GND</div>
+          <div class="pin uart">10<br>GPIO15</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin gpio active">11<br>GPIO17<br>⭐LED1</div>
+          <div class="pin gpio">12<br>GPIO18</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin gpio active">13<br>GPIO27<br>⭐LED2</div>
+          <div class="pin ground">14<br>GND<br>⭐</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin gpio active">15<br>GPIO22<br>⭐Relay1</div>
+          <div class="pin gpio active">16<br>GPIO23<br>⭐Relay2</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin power">17<br>3.3V</div>
+          <div class="pin gpio">18<br>GPIO24</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin spi">19<br>GPIO10</div>
+          <div class="pin ground">20<br>GND<br>⭐</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin spi">21<br>GPIO9</div>
+          <div class="pin gpio">22<br>GPIO25</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin spi">23<br>GPIO11</div>
+          <div class="pin spi">24<br>GPIO8</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin ground">25<br>GND</div>
+          <div class="pin spi">26<br>GPIO7</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin i2c">27<br>GPIO0</div>
+          <div class="pin i2c">28<br>GPIO1</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin gpio">29<br>GPIO5</div>
+          <div class="pin ground">30<br>GND</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin gpio">31<br>GPIO6</div>
+          <div class="pin gpio">32<br>GPIO12</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin gpio">33<br>GPIO13</div>
+          <div class="pin ground">34<br>GND</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin gpio">35<br>GPIO19</div>
+          <div class="pin gpio">36<br>GPIO16</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin gpio">37<br>GPIO26</div>
+          <div class="pin gpio">38<br>GPIO20</div>
+        </div>
+        <div class="pin-row">
+          <div class="pin ground">39<br>GND</div>
+          <div class="pin gpio">40<br>GPIO21</div>
+        </div>
+      </div>
+      <div class="pinout-legend">
+        <div class="legend-item"><span class="legend-color active"></span> Configured in Dashboard</div>
+        <div class="legend-item"><span class="legend-color ground"></span> Ground (GND) - ⭐ use these</div>
+        <div class="legend-item"><span class="legend-color power"></span> Power (3.3V/5V) - avoid for GPIOs</div>
+        <div class="legend-item"><span class="legend-color gpio"></span> Available GPIO</div>
+        <div class="legend-item"><span class="legend-color i2c"></span> I2C - avoid</div>
+        <div class="legend-item"><span class="legend-color spi"></span> SPI - avoid</div>
+        <div class="legend-item"><span class="legend-color uart"></span> UART - avoid</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single LED Circuit -->
+  <div class="wiring-section">
+    <h2 class="section-title">🔌 Single LED Test Circuit (GPIO 17)</h2>
+    <div class="circuit-diagram">
+      <div class="circuit-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <div class="circuit-visual">
+            <div class="pi-pin">
+              <div class="pin-label">Pi Pin 11</div>
+              <div class="pin-name">GPIO17</div>
+            </div>
+            <div class="wire gpio-wire">━━━━━━━━━━→</div>
+            <div class="component resistor">
+              <div class="component-label">220Ω</div>
+              <div class="resistor-symbol">▬▬▬▬▬</div>
+            </div>
+            <div class="wire">━━→</div>
+            <div class="component led">
+              <div class="led-symbol">
+                <div class="led-anode">▲</div>
+                <div class="led-body">💡</div>
+              </div>
+              <div class="component-label">LED (+)</div>
+            </div>
+            <div class="wire">━━→</div>
+            <div class="component led">
+              <div class="component-label">LED (-)</div>
+            </div>
+            <div class="wire gnd-wire">━━━━━━━━━━→</div>
+            <div class="pi-pin">
+              <div class="pin-label">Pi Pin 6</div>
+              <div class="pin-name">GND</div>
+            </div>
+          </div>
+          <div class="step-description">
+            <strong>Circuit Flow:</strong> GPIO17 (3.3V when HIGH) → 220Ω Resistor → LED Anode (+) → LED Cathode (-) → Ground
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Breadboard Layout -->
+  <div class="wiring-section">
+    <h2 class="section-title">🍞 Breadboard Layout - Single LED</h2>
+    <div class="breadboard-container">
+      <div class="breadboard">
+        <div class="breadboard-rail positive">+ + + + + + + + + + + +</div>
+        <div class="breadboard-rail negative">- - - - - - - - - - - -</div>
+        <div class="breadboard-main">
+          <div class="breadboard-row">
+            <div class="hole filled gpio-connection">1a</div>
+            <div class="hole">1b</div>
+            <div class="hole filled resistor-connection">1c</div>
+            <div class="hole">1d</div>
+            <div class="hole">1e</div>
+            <div class="breadboard-gap">|</div>
+            <div class="hole">1f</div>
+            <div class="hole">...</div>
+          </div>
+          <div class="breadboard-row">
+            <div class="hole">2a</div>
+            <div class="hole">2b</div>
+            <div class="hole">2c</div>
+            <div class="hole">2d</div>
+            <div class="hole">2e</div>
+            <div class="breadboard-gap">|</div>
+            <div class="hole">2f</div>
+            <div class="hole">...</div>
+          </div>
+          <div class="breadboard-row">
+            <div class="hole">3a</div>
+            <div class="hole">3b</div>
+            <div class="hole filled resistor-connection">3c</div>
+            <div class="hole">3d</div>
+            <div class="hole">3e</div>
+            <div class="breadboard-gap">|</div>
+            <div class="hole">3f</div>
+            <div class="hole">...</div>
+          </div>
+          <div class="breadboard-row">
+            <div class="hole">4a</div>
+            <div class="hole">4b</div>
+            <div class="hole">4c</div>
+            <div class="hole">4d</div>
+            <div class="hole">4e</div>
+            <div class="breadboard-gap">|</div>
+            <div class="hole">4f</div>
+            <div class="hole">...</div>
+          </div>
+          <div class="breadboard-row">
+            <div class="hole">5a</div>
+            <div class="hole">5b</div>
+            <div class="hole filled led-anode">5c</div>
+            <div class="hole">5d</div>
+            <div class="hole">5e</div>
+            <div class="breadboard-gap">|</div>
+            <div class="hole">5f</div>
+            <div class="hole">...</div>
+          </div>
+          <div class="breadboard-row">
+            <div class="hole">6a</div>
+            <div class="hole">6b</div>
+            <div class="hole">6c</div>
+            <div class="hole">6d</div>
+            <div class="hole">6e</div>
+            <div class="breadboard-gap">|</div>
+            <div class="hole">6f</div>
+            <div class="hole">...</div>
+          </div>
+          <div class="breadboard-row">
+            <div class="hole filled gnd-connection">7a</div>
+            <div class="hole">7b</div>
+            <div class="hole filled led-cathode">7c</div>
+            <div class="hole">7d</div>
+            <div class="hole">7e</div>
+            <div class="breadboard-gap">|</div>
+            <div class="hole">7f</div>
+            <div class="hole">...</div>
+          </div>
+        </div>
+        <div class="breadboard-rail positive">+ + + + + + + + + + + +</div>
+        <div class="breadboard-rail negative active">- - - - - - - - - - - -</div>
+      </div>
+      <div class="breadboard-legend">
+        <div class="legend-item"><span class="legend-dot gpio-connection"></span> GPIO17 wire (Pin 11)</div>
+        <div class="legend-item"><span class="legend-dot resistor-connection"></span> 220Ω Resistor</div>
+        <div class="legend-item"><span class="legend-dot led-anode"></span> LED Anode (+) long leg</div>
+        <div class="legend-item"><span class="legend-dot led-cathode"></span> LED Cathode (-) short leg</div>
+        <div class="legend-item"><span class="legend-dot gnd-connection"></span> Ground wire (Pin 6)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Complete 4-LED Setup -->
+  <div class="wiring-section">
+    <h2 class="section-title">⚡ Complete 4-LED Setup (All Dashboard GPIOs)</h2>
+    <div class="four-led-grid">
+      <div class="led-circuit-card">
+        <div class="led-header" style="background: rgba(241, 196, 15, 0.2);">
+          <div class="led-title">LED 1</div>
+          <div class="led-gpio">GPIO 17</div>
+        </div>
+        <div class="led-connections">
+          <div class="connection-item">
+            <span class="pin-badge gpio-pin">Pin 11</span>
+            <span class="arrow">→</span>
+            <span class="component-badge">220Ω</span>
+            <span class="arrow">→</span>
+            <span class="component-badge led-plus">LED+</span>
+            <span class="arrow">→</span>
+            <span class="component-badge led-minus">LED-</span>
+            <span class="arrow">→</span>
+            <span class="pin-badge gnd-pin">GND</span>
+          </div>
+        </div>
+        <div class="led-status">
+          <div class="status-indicator" style="background: #f1c40f;"></div>
+          <span>Yellow LED recommended</span>
+        </div>
+      </div>
+
+      <div class="led-circuit-card">
+        <div class="led-header" style="background: rgba(46, 204, 113, 0.2);">
+          <div class="led-title">LED 2</div>
+          <div class="led-gpio">GPIO 27</div>
+        </div>
+        <div class="led-connections">
+          <div class="connection-item">
+            <span class="pin-badge gpio-pin">Pin 13</span>
+            <span class="arrow">→</span>
+            <span class="component-badge">220Ω</span>
+            <span class="arrow">→</span>
+            <span class="component-badge led-plus">LED+</span>
+            <span class="arrow">→</span>
+            <span class="component-badge led-minus">LED-</span>
+            <span class="arrow">→</span>
+            <span class="pin-badge gnd-pin">GND</span>
+          </div>
+        </div>
+        <div class="led-status">
+          <div class="status-indicator" style="background: #2ecc71;"></div>
+          <span>Green LED recommended</span>
+        </div>
+      </div>
+
+      <div class="led-circuit-card">
+        <div class="led-header" style="background: rgba(52, 152, 219, 0.2);">
+          <div class="led-title">Relay 1 (Testing with LED)</div>
+          <div class="led-gpio">GPIO 22</div>
+        </div>
+        <div class="led-connections">
+          <div class="connection-item">
+            <span class="pin-badge gpio-pin">Pin 15</span>
+            <span class="arrow">→</span>
+            <span class="component-badge">220Ω</span>
+            <span class="arrow">→</span>
+            <span class="component-badge led-plus">LED+</span>
+            <span class="arrow">→</span>
+            <span class="component-badge led-minus">LED-</span>
+            <span class="arrow">→</span>
+            <span class="pin-badge gnd-pin">GND</span>
+          </div>
+        </div>
+        <div class="led-status">
+          <div class="status-indicator" style="background: #3498db;"></div>
+          <span>Blue LED for testing (use relay module later)</span>
+        </div>
+      </div>
+
+      <div class="led-circuit-card">
+        <div class="led-header" style="background: rgba(231, 76, 60, 0.2);">
+          <div class="led-title">Relay 2 (Testing with LED)</div>
+          <div class="led-gpio">GPIO 23</div>
+        </div>
+        <div class="led-connections">
+          <div class="connection-item">
+            <span class="pin-badge gpio-pin">Pin 16</span>
+            <span class="arrow">→</span>
+            <span class="component-badge">220Ω</span>
+            <span class="arrow">→</span>
+            <span class="component-badge led-plus">LED+</span>
+            <span class="arrow">→</span>
+            <span class="component-badge led-minus">LED-</span>
+            <span class="arrow">→</span>
+            <span class="pin-badge gnd-pin">GND</span>
+          </div>
+        </div>
+        <div class="led-status">
+          <div class="status-indicator" style="background: #e74c3c;"></div>
+          <span>Red LED for testing (use relay module later)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Safety Guidelines -->
+  <div class="wiring-section">
+    <h2 class="section-title">🛡️ Safety Checklist</h2>
+    <div class="safety-grid">
+      <div class="safety-item danger">
+        <div class="safety-icon">❌</div>
+        <div class="safety-text">
+          <strong>Never</strong> connect LED without resistor
+        </div>
+      </div>
+      <div class="safety-item danger">
+        <div class="safety-icon">❌</div>
+        <div class="safety-text">
+          <strong>Never</strong> exceed 3.3V on GPIO pins
+        </div>
+      </div>
+      <div class="safety-item success">
+        <div class="safety-icon">✅</div>
+        <div class="safety-text">
+          <strong>Always</strong> use 220Ω resistor minimum
+        </div>
+      </div>
+      <div class="safety-item success">
+        <div class="safety-icon">✅</div>
+        <div class="safety-text">
+          <strong>Check</strong> LED polarity before powering
+        </div>
+      </div>
+      <div class="safety-item warning">
+        <div class="safety-icon">⚠️</div>
+        <div class="safety-text">
+          <strong>Max</strong> 16mA per GPIO pin
+        </div>
+      </div>
+      <div class="safety-item warning">
+        <div class="safety-icon">⚠️</div>
+        <div class="safety-text">
+          <strong>Power off</strong> before changing wiring
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Relay Module Wiring -->
+  <div class="wiring-section">
+    <h2 class="section-title">🔌 Relay Module Wiring (For Actual Relays)</h2>
+    
+    <div class="relay-info-box" style="background: rgba(241, 196, 15, 0.1); border: 2px solid #f39c12; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+      <p style="color: #bbb; margin-bottom: 0.5rem;">
+        <strong style="color: #f39c12;">You have a 5V Relay Module!</strong>
+      </p>
+      <p style="color: #bbb; margin-bottom: 1rem;">
+        For initial testing, use LEDs on GPIO 22 and 23. Once LEDs work, follow the 5V relay wiring below to control real devices.
+      </p>
+      <p style="color: #e74c3c; font-size: 0.9rem;">
+        <strong>⚠️ Important:</strong> 5V relays need 5V power from Pi Pin 2 or 4 (not 3.3V!)
+      </p>
+    </div>
+
+    <div class="relay-wiring-grid">
+      <div class="relay-diagram">
+        <h3 style="color: #9b59b6; margin-bottom: 1.5rem;">Relay Module Connection</h3>
+        <div class="relay-circuit">
+          <div class="relay-section">
+            <div class="relay-header">Control Side (Low Voltage)</div>
+            <div class="relay-connections">
+              <div class="relay-pin-item" style="border-left-color: #f39c12; background: rgba(241, 196, 15, 0.1);">
+                <span class="relay-label" style="color: #f39c12;">VCC</span>
+                <span class="relay-arrow">←</span>
+                <span class="relay-source" style="color: #f39c12;">Pi Pin 2 or Pin 4 (5V) ⚡</span>
+                <div class="relay-note" style="color: #f39c12; font-weight: bold;">5V relay requires 5V power!</div>
+              </div>
+              <div class="relay-pin-item">
+                <span class="relay-label">GND</span>
+                <span class="relay-arrow">←</span>
+                <span class="relay-source">Pi GND</span>
+                <div class="relay-note">Ground connection</div>
+              </div>
+              <div class="relay-pin-item">
+                <span class="relay-label">IN/Signal</span>
+                <span class="relay-arrow">←</span>
+                <span class="relay-source">GPIO 22 (Pin 15)</span>
+                <div class="relay-note">Control signal from Pi</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="relay-section">
+            <div class="relay-header">Switch Side (High Voltage)</div>
+            <div class="relay-connections">
+              <div class="relay-pin-item">
+                <span class="relay-label">COM</span>
+                <span class="relay-arrow">→</span>
+                <span class="relay-source">Common (from power source)</span>
+                <div class="relay-note">Always connected</div>
+              </div>
+              <div class="relay-pin-item">
+                <span class="relay-label">NO</span>
+                <span class="relay-arrow">→</span>
+                <span class="relay-source">Normally Open (to load)</span>
+                <div class="relay-note">Connects when GPIO HIGH</div>
+              </div>
+              <div class="relay-pin-item">
+                <span class="relay-label">NC</span>
+                <span class="relay-arrow">→</span>
+                <span class="relay-source">Normally Closed (to load)</span>
+                <div class="relay-note">Disconnects when GPIO HIGH</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="relay-example">
+          <h4 style="color: #f39c12; margin-top: 2rem; margin-bottom: 1rem;">🔧 Your Setup: 5V Relay Module</h4>
+          <div class="relay-circuit-example">
+            <pre style="background: rgba(241, 196, 15, 0.1); padding: 1.5rem; border-radius: 6px; color: #fff; font-size: 0.9rem; text-align: left; line-height: 2; border: 2px solid #f39c12;">
+<strong style="color: #f39c12;">Raspberry Pi GPIO Header          5V Relay Module</strong>
+──────────────────────────────   ───────────────────
+
+Pin 2 or Pin 4 (5V)      ──────→  VCC (Power)
+Pin 6 (GND)              ──────→  GND (Ground)
+Pin 15 (GPIO 22)         ──────→  IN (Signal/Control)
+
+
+<strong style="color: #f39c12;">Relay Module Terminals            Load (Device to Control)</strong>
+───────────────────────────      ─────────────────────────
+
+COM (Common)             ←──────  Power Source (+)
+NO (Normally Open)       ──────→  Device (+) wire
+NC (Normally Closed)        ✗     Not used for simple ON/OFF
+
+                                  Device (-) wire  ──────→  Power Source (-)
+
+
+<strong style="color: #2ecc71;">How it works:</strong>
+• GPIO 22 LOW  → Relay OFF → NO disconnected from COM → Device OFF
+• GPIO 22 HIGH → Relay ON  → NO connected to COM    → Device ON
+            </pre>
+          </div>
+        </div>
+
+        <div class="relay-example">
+          <h4 style="color: #3498db; margin-top: 2rem; margin-bottom: 1rem;">Example: Controlling a 12V DC Fan</h4>
+          <div class="relay-circuit-example">
+            <pre style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 6px; color: #bbb; font-size: 0.85rem; text-align: left; line-height: 1.8;">
+<strong>Step-by-Step Connection:</strong>
+
+<strong style="color: #f39c12;">1. Power the Relay Module</strong>
+   Pi Pin 2 (5V) ────────────────→ Relay VCC
+   Pi Pin 6 (GND) ───────────────→ Relay GND
+
+<strong style="color: #f39c12;">2. Connect Control Signal</strong>
+   Pi Pin 15 (GPIO 22) ──────────→ Relay IN
+
+<strong style="color: #f39c12;">3. Connect the Load (Fan)</strong>
+   12V Power Supply (+) ─────────→ Relay COM
+   Relay NO ─────────────────────→ Fan (+) positive wire
+   Fan (-) negative wire ────────→ 12V Power Supply (-)
+
+<strong style="color: #2ecc71;">Result:</strong>
+• Toggle GPIO 22 ON  → Relay clicks, fan starts
+• Toggle GPIO 22 OFF → Relay releases, fan stops
+            </pre>
+          </div>
+        </div>
+
+        <div class="relay-quick-ref" style="background: rgba(241, 196, 15, 0.05); border: 2px solid #f39c12; border-radius: 8px; padding: 1.5rem; margin-top: 2rem;">
+          <h4 style="color: #f39c12; margin-bottom: 1rem;">📋 Quick Reference: Your 5V Relay Module</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 6px;">
+              <div style="color: #f39c12; font-weight: bold; margin-bottom: 0.5rem;">Control Connections</div>
+              <div style="color: #bbb; font-size: 0.85rem; line-height: 1.8;">
+                VCC → Pi Pin 2 (5V)<br>
+                GND → Pi Pin 6 (GND)<br>
+                IN → Pi Pin 15 (GPIO22)
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 6px;">
+              <div style="color: #9b59b6; font-weight: bold; margin-bottom: 0.5rem;">Load Connections</div>
+              <div style="color: #bbb; font-size: 0.85rem; line-height: 1.8;">
+                COM → Power (+)<br>
+                NO → Device (+)<br>
+                Device (-) → Power (-)
+              </div>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 6px;">
+              <div style="color: #2ecc71; font-weight: bold; margin-bottom: 0.5rem;">Operation</div>
+              <div style="color: #bbb; font-size: 0.85rem; line-height: 1.8;">
+                GPIO LOW → Relay OFF<br>
+                GPIO HIGH → Relay ON<br>
+                Max: 10A @ 250VAC/30VDC
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="relay-warning-box">
+          <h4 style="color: #e74c3c; margin-bottom: 1rem;">⚠️ Important Relay Safety</h4>
+          <div class="warning-items">
+            <div class="warning-item">❌ <strong>Never</strong> connect AC mains (110V/220V) without proper insulation and expertise</div>
+            <div class="warning-item">⚠️ <strong>5V Relay Note:</strong> Must use Pi Pin 2 or 4 for VCC (not 3.3V - won't work!)</div>
+            <div class="warning-item">✅ Use optocouplers for AC loads (provides isolation)</div>
+            <div class="warning-item">✅ Verify relay can handle your load current (typically 10A max)</div>
+            <div class="warning-item">✅ Use flyback diode if controlling inductive loads (motors, solenoids)</div>
+            <div class="warning-item">⚡ <strong>For AC loads:</strong> Hire an electrician or use certified relay boards</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relay-types">
+        <h3 style="color: #9b59b6; margin-bottom: 1.5rem;">Common Relay Modules</h3>
+        <div class="relay-type-grid">
+          <div class="relay-type-card">
+            <div class="relay-type-name">3.3V Relay Module</div>
+            <div class="relay-type-specs">
+              <div>✓ Direct Pi compatibility</div>
+              <div>✓ No extra power needed</div>
+              <div>✓ Best for Pi GPIO (3.3V)</div>
+              <div>Common: SRD-03VDC-SL-C</div>
+            </div>
+          </div>
+          <div class="relay-type-card" style="border: 2px solid #f39c12; box-shadow: 0 0 15px rgba(241, 196, 15, 0.3);">
+            <div class="relay-type-name" style="color: #f39c12;">5V Relay Module ⭐ YOU HAVE THIS</div>
+            <div class="relay-type-specs">
+              <div>✓ <strong>Use Pi Pin 2 or 4 for VCC (5V)</strong></div>
+              <div>✓ Most common and affordable</div>
+              <div>✓ Higher switching capacity</div>
+              <div>✓ Typically handles 10A at 250VAC/30VDC</div>
+              <div>Common model: SRD-05VDC-SL-C</div>
+            </div>
+          </div>
+          <div class="relay-type-card">
+            <div class="relay-type-name">Solid State Relay (SSR)</div>
+            <div class="relay-type-specs">
+              <div>✓ No moving parts</div>
+              <div>✓ Silent operation</div>
+              <div>✓ Longer lifespan</div>
+              <div>⚡ Can handle AC loads safely</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testing Steps -->
+  <div class="wiring-section">
+    <h2 class="section-title">🧪 Testing Steps</h2>
+    <div class="testing-steps">
+      <div class="test-step">
+        <div class="test-number">1</div>
+        <div class="test-content">
+          <h3>Wire the Circuit</h3>
+          <p>Follow the breadboard layout above. Start with one LED to test.</p>
+        </div>
+      </div>
+      <div class="test-step">
+        <div class="test-number">2</div>
+        <div class="test-content">
+          <h3>Start Dashboard with Sudo</h3>
+          <code>sudo venv/bin/python run.py</code>
+        </div>
+      </div>
+      <div class="test-step">
+        <div class="test-number">3</div>
+        <div class="test-content">
+          <h3>Open GPIO Control</h3>
+          <p><a href="/gpio" style="color: #3498db;">http://192.168.68.65:5050/gpio</a></p>
+        </div>
+      </div>
+      <div class="test-step">
+        <div class="test-number">4</div>
+        <div class="test-content">
+          <h3>Toggle LED Switch</h3>
+          <p>Click the toggle switch for LED 1. The LED should light up!</p>
+        </div>
+      </div>
+      <div class="test-step">
+        <div class="test-number">5</div>
+        <div class="test-content">
+          <h3>Verify All LEDs</h3>
+          <p>Test each LED one by one to confirm all connections.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Troubleshooting -->
+  <div class="wiring-section">
+    <h2 class="section-title">🔧 Troubleshooting</h2>
+    <div class="troubleshooting-grid">
+      <div class="trouble-card">
+        <div class="trouble-problem">LED not lighting up</div>
+        <div class="trouble-solutions">
+          <div class="trouble-item">• Reverse LED polarity (swap it 180°)</div>
+          <div class="trouble-item">• Check resistor is in circuit</div>
+          <div class="trouble-item">• Verify wire connections are firm</div>
+          <div class="trouble-item">• Run dashboard with sudo</div>
+        </div>
+      </div>
+      <div class="trouble-card">
+        <div class="trouble-problem">LED always on</div>
+        <div class="trouble-solutions">
+          <div class="trouble-item">• GPIO might be stuck HIGH</div>
+          <div class="trouble-item">• Check: <code>gpioinfo</code></div>
+          <div class="trouble-item">• Restart Pi to reset pins</div>
+        </div>
+      </div>
+      <div class="trouble-card">
+        <div class="trouble-problem">LED very dim</div>
+        <div class="trouble-solutions">
+          <div class="trouble-item">• Resistor value too high</div>
+          <div class="trouble-item">• Try 220Ω instead of 1kΩ</div>
+          <div class="trouble-item">• Check power supply</div>
+        </div>
+      </div>
+      <div class="trouble-card">
+        <div class="trouble-problem">"Simulation Mode" shown</div>
+        <div class="trouble-solutions">
+          <div class="trouble-item">• Dashboard not running as root</div>
+          <div class="trouble-item">• Run: <code>sudo venv/bin/python run.py</code></div>
+          <div class="trouble-item">• Or configure udev rules</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="wiring-section">
+    <h2 class="section-title">🔗 Related Resources</h2>
+    <div class="resource-links">
+      <a href="/gpio" class="resource-link">
+        <span class="resource-icon">⚡</span>
+        <div class="resource-info">
+          <div class="resource-name">GPIO Control Page</div>
+          <div class="resource-desc">Test your wiring with live controls</div>
+        </div>
+      </a>
+      <a href="/docs/GPIO.md" class="resource-link">
+        <span class="resource-icon">📚</span>
+        <div class="resource-info">
+          <div class="resource-name">GPIO Setup Guide</div>
+          <div class="resource-desc">Software configuration and API</div>
+        </div>
+      </a>
+      <a href="/docs/GPIO_PIN_REFERENCE.md" class="resource-link">
+        <span class="resource-icon">📍</span>
+        <div class="resource-info">
+          <div class="resource-name">Pin Reference</div>
+          <div class="resource-desc">Complete GPIO pinout details</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<div class="quick-links" style="max-width: 400px;">
+  <a href="{{ url_for('main.gpio') }}" class="link-card"><span class="link-icon">⚡</span><div class="link-title">GPIO Control</div></a>
+  <a href="{{ url_for('main.index') }}" class="link-card"><span class="link-icon">🏠</span><div class="link-title">Home</div></a>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .wiring-section {
+    margin: 3rem 0;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .section-title {
+    color: #3498db;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+  }
+
+  /* Components Grid */
+  .components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .component-card {
+    background: rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .component-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .component-name {
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 0.3rem;
+  }
+
+  .component-detail {
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  /* LED Polarity Guide */
+  .polarity-guide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    padding: 2rem;
+  }
+
+  .led-diagram {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .led-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .led-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .led-leg {
+    width: 3px;
+    background: #888;
+    position: relative;
+  }
+
+  .led-long {
+    height: 60px;
+    background: linear-gradient(180deg, #f39c12, #888);
+  }
+
+  .led-short {
+    height: 40px;
+    background: linear-gradient(180deg, #888, #555);
+  }
+
+  .led-bulb {
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, #f1c40f, #e67e22);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+  }
+
+  .led-label {
+    position: absolute;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    color: #aaa;
+    text-align: center;
+  }
+
+  .led-long .led-label {
+    top: -25px;
+    left: 10px;
+    color: #f39c12;
+    font-weight: bold;
+  }
+
+  .led-short .led-label {
+    bottom: -25px;
+    left: 10px;
+    color: #888;
+  }
+
+  .led-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .note-item {
+    background: rgba(46, 204, 113, 0.1);
+    border-left: 3px solid #2ecc71;
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+
+  /* GPIO Pinout */
+  .pinout-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .pinout-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    background: #1a1a2e;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid rgba(52, 152, 219, 0.3);
+  }
+
+  .pin-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .pin {
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .pin.power {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border-color: #e74c3c;
+  }
+
+  .pin.ground {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    border-color: #555;
+  }
+
+  .pin.gpio {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border-color: #3498db;
+  }
+
+  .pin.gpio.active {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    border-color: #f39c12;
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.5);
+    animation: pin-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pin-pulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(243, 156, 18, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(243, 156, 18, 0.8); }
+  }
+
+  .pin.i2c {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    border-color: #9b59b6;
+  }
+
+  .pin.spi {
+    background: linear-gradient(135deg, #16a085, #1abc9c);
+    border-color: #16a085;
+  }
+
+  .pin.uart {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    border-color: #e67e22;
+  }
+
+  .pinout-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .legend-color.active {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+  }
+
+  .legend-color.ground {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+  }
+
+  .legend-color.power {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+  }
+
+  .legend-color.gpio {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+  }
+
+  .legend-color.i2c {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  }
+
+  .legend-color.spi {
+    background: linear-gradient(135deg, #16a085, #1abc9c);
+  }
+
+  .legend-color.uart {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+  }
+
+  /* Circuit Diagram */
+  .circuit-diagram {
+    padding: 2rem;
+    background: #0a0a0f;
+    border-radius: 12px;
+    border: 1px solid rgba(52, 152, 219, 0.2);
+  }
+
+  .circuit-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+  }
+
+  .pi-pin {
+    background: rgba(52, 152, 219, 0.2);
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    text-align: center;
+  }
+
+  .pin-label {
+    font-size: 0.7rem;
+    color: #888;
+  }
+
+  .pin-name {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #3498db;
+  }
+
+  .wire {
+    color: #3498db;
+    font-size: 1.5rem;
+    font-family: monospace;
+  }
+
+  .wire.gpio-wire {
+    color: #f39c12;
+  }
+
+  .wire.gnd-wire {
+    color: #95a5a6;
+  }
+
+  .component {
+    text-align: center;
+  }
+
+  .component-label {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin-top: 0.3rem;
+  }
+
+  .resistor {
+    background: rgba(241, 196, 15, 0.1);
+    border: 1px solid rgba(241, 196, 15, 0.3);
+    border-radius: 6px;
+    padding: 0.8rem;
+  }
+
+  .resistor-symbol {
+    font-family: monospace;
+    color: #f1c40f;
+    font-size: 1.2rem;
+  }
+
+  .led {
+    background: rgba(46, 204, 113, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    border-radius: 6px;
+    padding: 0.8rem;
+  }
+
+  .led-symbol {
+    font-size: 1.5rem;
+  }
+
+  .led-anode {
+    color: #2ecc71;
+  }
+
+  .led-body {
+    font-size: 1.5rem;
+  }
+
+  .step-description {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(52, 152, 219, 0.05);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* Breadboard */
+  .breadboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .breadboard {
+    background: #f4e5c2;
+    border: 3px solid #8b7355;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .breadboard-rail {
+    padding: 0.5rem;
+    margin: 0.3rem 0;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    text-align: center;
+    letter-spacing: 0.3rem;
+  }
+
+  .breadboard-rail.positive {
+    background: #e74c3c;
+    color: #fff;
+  }
+
+  .breadboard-rail.negative {
+    background: #34495e;
+    color: #fff;
+  }
+
+  .breadboard-rail.negative.active {
+    box-shadow: 0 0 10px rgba(52, 73, 94, 0.8);
+  }
+
+  .breadboard-main {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #2c3e50;
+    border-radius: 6px;
+  }
+
+  .breadboard-row {
+    display: flex;
+    gap: 0.3rem;
+    margin: 0.2rem 0;
+    align-items: center;
+  }
+
+  .hole {
+    width: 25px;
+    height: 25px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    border: 2px solid #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    color: #666;
+  }
+
+  .hole.filled {
+    border-width: 3px;
+    font-weight: bold;
+  }
+
+  .hole.gpio-connection {
+    background: #f39c12;
+    border-color: #f1c40f;
+    color: #fff;
+  }
+
+  .hole.resistor-connection {
+    background: #e67e22;
+    border-color: #f39c12;
+    color: #fff;
+  }
+
+  .hole.led-anode {
+    background: #2ecc71;
+    border-color: #27ae60;
+    color: #fff;
+  }
+
+  .hole.led-cathode {
+    background: #e74c3c;
+    border-color: #c0392b;
+    color: #fff;
+  }
+
+  .hole.gnd-connection {
+    background: #95a5a6;
+    border-color: #7f8c8d;
+    color: #fff;
+  }
+
+  .breadboard-gap {
+    color: #555;
+    font-size: 1.5rem;
+    margin: 0 0.5rem;
+  }
+
+  .breadboard-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .legend-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* 4-LED Grid */
+  .four-led-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .led-circuit-card {
+    background: rgba(44, 62, 80, 0.3);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .led-header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .led-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .led-gpio {
+    font-size: 0.9rem;
+    color: #aaa;
+    font-family: monospace;
+  }
+
+  .led-connections {
+    padding: 1.5rem;
+  }
+
+  .connection-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .pin-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    font-family: monospace;
+  }
+
+  .pin-badge.gpio-pin {
+    background: rgba(243, 156, 18, 0.3);
+    border: 1px solid #f39c12;
+    color: #f1c40f;
+  }
+
+  .pin-badge.gnd-pin {
+    background: rgba(149, 165, 166, 0.3);
+    border: 1px solid #95a5a6;
+    color: #bdc3c7;
+  }
+
+  .component-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    background: rgba(52, 152, 219, 0.2);
+    border: 1px solid rgba(52, 152, 219, 0.4);
+    color: #3498db;
+  }
+
+  .component-badge.led-plus {
+    background: rgba(46, 204, 113, 0.2);
+    border-color: #2ecc71;
+    color: #2ecc71;
+  }
+
+  .component-badge.led-minus {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: #e74c3c;
+    color: #e74c3c;
+  }
+
+  .arrow {
+    color: #3498db;
+    font-size: 1rem;
+  }
+
+  .led-status {
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.85rem;
+    color: #aaa;
+  }
+
+  .status-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  /* Safety Grid */
+  .safety-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .safety-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 2px solid;
+  }
+
+  .safety-item.danger {
+    background: rgba(231, 76, 60, 0.1);
+    border-color: rgba(231, 76, 60, 0.4);
+  }
+
+  .safety-item.warning {
+    background: rgba(243, 156, 18, 0.1);
+    border-color: rgba(243, 156, 18, 0.4);
+  }
+
+  .safety-item.success {
+    background: rgba(46, 204, 113, 0.1);
+    border-color: rgba(46, 204, 113, 0.4);
+  }
+
+  .safety-icon {
+    font-size: 2rem;
+  }
+
+  .safety-text {
+    font-size: 0.9rem;
+  }
+
+  /* Testing Steps */
+  .testing-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .test-step {
+    display: flex;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .test-number {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .test-content {
+    flex: 1;
+    background: rgba(52, 152, 219, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid #3498db;
+  }
+
+  .test-content h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    color: #3498db;
+    font-size: 1.1rem;
+  }
+
+  .test-content p {
+    margin: 0.5rem 0;
+    color: #bbb;
+  }
+
+  .test-content code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-family: monospace;
+    color: #f39c12;
+  }
+
+  /* Troubleshooting */
+  .troubleshooting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .trouble-card {
+    background: rgba(231, 76, 60, 0.05);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .trouble-problem {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(231, 76, 60, 0.2);
+  }
+
+  .trouble-solutions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .trouble-item {
+    font-size: 0.85rem;
+    color: #bbb;
+    line-height: 1.5;
+  }
+
+  .trouble-item code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    color: #f39c12;
+    font-size: 0.8rem;
+  }
+
+  /* Resource Links */
+  .resource-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .resource-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .resource-link:hover {
+    background: rgba(52, 152, 219, 0.2);
+    border-color: rgba(52, 152, 219, 0.5);
+    transform: translateY(-2px);
+  }
+
+  .resource-icon {
+    font-size: 2rem;
+  }
+
+  .resource-info {
+    flex: 1;
+  }
+
+  .resource-name {
+    font-weight: bold;
+    color: #3498db;
+    margin-bottom: 0.3rem;
+  }
+
+  .resource-desc {
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  /* Resistor Guide Styles */
+  .resistor-guide {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .resistor-visual-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .resistor-example {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .resistor-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 2rem 1rem;
+    background: #f4e5c2;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+
+  .resistor-body::before {
+    content: '';
+    width: 30px;
+    height: 8px;
+    background: #c0c0c0;
+    border-radius: 2px;
+  }
+
+  .resistor-body::after {
+    content: '';
+    width: 30px;
+    height: 8px;
+    background: #c0c0c0;
+    border-radius: 2px;
+  }
+
+  .resistor-band {
+    width: 25px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .resistor-band.tolerance {
+    margin-left: 0.8rem;
+  }
+
+  .band-label {
+    position: absolute;
+    bottom: -45px;
+    font-size: 0.7rem;
+    color: #bbb;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+
+  .resistor-calculation {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: 6px;
+    color: #bbb;
+    font-size: 0.9rem;
+  }
+
+  .resistor-calculation strong {
+    color: #f39c12;
+    font-size: 1.1rem;
+  }
+
+  .color-code-table {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .color-table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .color-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+  }
+
+  .color-swatch {
+    width: 60px;
+    height: 30px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .color-value {
+    flex: 1;
+    color: #bbb;
+    font-size: 0.85rem;
+  }
+
+  .color-note {
+    padding: 1rem;
+    background: rgba(241, 196, 15, 0.1);
+    border-left: 3px solid #f39c12;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #bbb;
+  }
+
+  .safe-resistors {
+    background: rgba(46, 204, 113, 0.05);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+  }
+
+  .resistor-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .resistor-option {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .resistor-option.recommended {
+    background: rgba(241, 196, 15, 0.1);
+    border: 2px solid #f39c12;
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.3);
+  }
+
+  .option-value {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #f39c12;
+    margin-bottom: 0.5rem;
+  }
+
+  .option-colors {
+    font-size: 0.85rem;
+    color: #3498db;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+  }
+
+  .option-note {
+    font-size: 0.75rem;
+    color: #888;
+  }
+
+  .resistor-option.recommended .option-value {
+    color: #f1c40f;
+  }
+
+  .resistor-option.recommended .option-note {
+    color: #aaa;
+  }
+
+  /* Relay Module Styles */
+  .relay-wiring-grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .relay-diagram {
+    background: rgba(155, 89, 182, 0.05);
+    border: 1px solid rgba(155, 89, 182, 0.3);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .relay-circuit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .relay-section {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid rgba(155, 89, 182, 0.3);
+  }
+
+  .relay-header {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #9b59b6;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(155, 89, 182, 0.3);
+    text-align: center;
+  }
+
+  .relay-connections {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .relay-pin-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.8rem;
+    border-radius: 6px;
+    border-left: 3px solid #9b59b6;
+  }
+
+  .relay-label {
+    font-weight: bold;
+    color: #9b59b6;
+    font-size: 0.95rem;
+  }
+
+  .relay-arrow {
+    color: #3498db;
+    font-size: 1.2rem;
+    margin: 0 0.5rem;
+  }
+
+  .relay-source {
+    color: #3498db;
+    font-size: 0.9rem;
+    font-family: monospace;
+  }
+
+  .relay-note {
+    font-size: 0.75rem;
+    color: #888;
+    font-style: italic;
+  }
+
+  .relay-warning-box {
+    background: rgba(231, 76, 60, 0.1);
+    border: 2px solid rgba(231, 76, 60, 0.4);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .warning-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .warning-item {
+    font-size: 0.9rem;
+    color: #bbb;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    border-left: 3px solid #e74c3c;
+  }
+
+  .relay-type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .relay-type-card {
+    background: rgba(155, 89, 182, 0.1);
+    border: 1px solid rgba(155, 89, 182, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+
+  .relay-type-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #9b59b6;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .relay-type-specs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #bbb;
+  }
+
+  .relay-type-specs div {
+    padding: 0.3rem 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .polarity-guide {
+      flex-direction: column;
+    }
+
+    .led-diagram {
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .circuit-visual {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .wire {
+      transform: rotate(90deg);
+    }
+
+    .pinout-grid {
+      padding: 1rem;
+    }
+
+    .pin-row {
+      gap: 0.5rem;
+    }
+
+    .pin {
+      font-size: 0.65rem;
+      padding: 0.5rem 0.7rem;
+    }
+  }
+</style>
+{% endblock %}
+

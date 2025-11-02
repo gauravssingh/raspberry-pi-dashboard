@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Logs & Alerts - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>📋 Logs & Alerts</h1>
+<p class="tagline">Real-time system and service logs</p>
+
+<div id="error-container" class="error-container"></div>
+
+<!-- Service Selector Section -->
+<section class="logs-section">
+  <div class="logs-controls">
+    <div class="control-group">
+      <label class="control-label">Service:</label>
+      <select id="service-selector" class="logs-select" onchange="loadLogs()">
+        <option value="system">System (All)</option>
+        <option value="dashboard">Dashboard</option>
+        <option value="raspotify">Raspotify</option>
+        <option value="shairport-sync">Shairport Sync</option>
+        <option value="nginx">Nginx</option>
+        <option value="ssh">SSH</option>
+        <option value="kernel">Kernel</option>
+      </select>
+    </div>
+    
+    <div class="control-group">
+      <label class="control-label">Lines:</label>
+      <select id="lines-selector" class="logs-select" onchange="loadLogs()">
+        <option value="50">50</option>
+        <option value="100" selected>100</option>
+        <option value="200">200</option>
+        <option value="500">500</option>
+        <option value="1000">1000</option>
+      </select>
+    </div>
+    
+    <div class="control-group">
+      <label class="control-label">Priority:</label>
+      <select id="priority-selector" class="logs-select" onchange="loadLogs()">
+        <option value="">All</option>
+        <option value="err">Error</option>
+        <option value="warning">Warning</option>
+        <option value="notice">Notice</option>
+        <option value="info">Info</option>
+        <option value="debug">Debug</option>
+      </select>
+    </div>
+    
+    <div class="control-group">
+      <button class="btn-primary" onclick="loadLogs()">
+        <span class="btn-icon">🔄</span> Refresh
+      </button>
+      <button class="btn-secondary" onclick="toggleAutoRefresh()">
+        <span class="btn-icon" id="auto-refresh-icon">▶️</span>
+        <span id="auto-refresh-text">Auto</span>
+      </button>
+      <button class="btn-secondary" onclick="clearLogsDisplay()">
+        <span class="btn-icon">🗑️</span> Clear
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Search Section -->
+<section class="logs-section">
+  <div class="search-container">
+    <input type="text" id="search-input" class="search-input" 
+           placeholder="Search logs... (press Enter to search)">
+    <button class="btn-primary" onclick="searchLogs()">
+      <span class="btn-icon">🔍</span> Search
+    </button>
+  </div>
+</section>
+
+<!-- Quick Actions -->
+<section class="logs-section">
+  <div class="quick-actions">
+    <button class="quick-action-btn" onclick="showErrors()">
+      <span class="action-icon">❌</span>
+      <span class="action-text">Recent Errors</span>
+    </button>
+    <button class="quick-action-btn" onclick="showBootLogs()">
+      <span class="action-icon">🚀</span>
+      <span class="action-text">Boot Logs</span>
+    </button>
+    <button class="quick-action-btn" onclick="exportLogs()">
+      <span class="action-icon">💾</span>
+      <span class="action-text">Export</span>
+    </button>
+  </div>
+</section>
+
+<!-- Log Stats -->
+<section class="logs-section">
+  <div class="log-stats">
+    <div class="stat-item">
+      <span class="stat-label">Service:</span>
+      <span class="stat-value" id="current-service">System</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Lines:</span>
+      <span class="stat-value" id="log-count">0</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Last Updated:</span>
+      <span class="stat-value" id="last-updated">--</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Auto-Refresh:</span>
+      <span class="stat-value" id="auto-status">Off</span>
+    </div>
+  </div>
+</section>
+
+<!-- Logs Display -->
+<section class="logs-section">
+  <div class="loading-message" id="logs-loading" style="display: none;">
+    <div class="spinner"></div>
+    <span>Loading logs...</span>
+  </div>
+  
+  <div id="logs-display-container">
+    <div class="logs-viewer">
+      <div class="logs-header">
+        <span class="logs-title">Log Output</span>
+        <div class="logs-actions">
+          <button class="icon-btn" onclick="scrollToTop()" title="Scroll to top">
+            ⬆️
+          </button>
+          <button class="icon-btn" onclick="scrollToBottom()" title="Scroll to bottom">
+            ⬇️
+          </button>
+          <button class="icon-btn" onclick="toggleWrap()" title="Toggle line wrap">
+            ↔️
+          </button>
+        </div>
+      </div>
+      <pre id="logs-content" class="logs-content">
+<span class="log-welcome">Welcome to the Logs Viewer</span>
+
+Select a service above and click "Refresh" to view logs.
+
+<span class="log-info">Tips:</span>
+• Use the search box to find specific entries
+• Click "Recent Errors" to see only error messages
+• Enable auto-refresh for real-time monitoring
+• Adjust the number of lines to view more or less history
+      </pre>
+    </div>
+  </div>
+</section>
+
+<!-- Service Status Cards -->
+<section class="logs-section">
+  <h2 class="section-title">Service Status</h2>
+  <div class="loading-message" id="services-loading">
+    <div class="spinner"></div>
+    <span>Loading service status...</span>
+  </div>
+  <div id="services-status-grid" style="display: none;">
+    <!-- Will be populated by JavaScript -->
+  </div>
+</section>
+
+<div class="quick-links" style="max-width: 600px;">
+  <a href="{{ url_for('main.index') }}" class="link-card">
+    <span class="link-icon">🏠</span>
+    <div class="link-title">Home</div>
+  </a>
+  <a href="{{ url_for('main.tools') }}" class="link-card">
+    <span class="link-icon">🔧</span>
+    <div class="link-title">Tools</div>
+  </a>
+  <a href="{{ url_for('main.docs') }}" class="link-card">
+    <span class="link-icon">📖</span>
+    <div class="link-title">Docs</div>
+  </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/logs.js') }}"></script>
+{% endblock %}
+

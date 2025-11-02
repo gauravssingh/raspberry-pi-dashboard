@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Configuration - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>⚙️ Configuration</h1>
+<p class="tagline">Network & Device Information</p>
+
+<div id="error-container" class="error-container"></div>
+
+<!-- System Information Section -->
+<section class="config-section">
+  <h2 class="section-title">System Information</h2>
+  <div class="loading-message" id="system-info-loading">
+    <div class="spinner"></div>
+    <span>Loading system information...</span>
+  </div>
+  <div class="info-grid" id="system-info-grid" style="display: none;">
+    <div class="info-card">
+      <div class="info-label">Hostname</div>
+      <div class="info-value" id="hostname">--</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Pi Model</div>
+      <div class="info-value" id="pi-model">--</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">OS</div>
+      <div class="info-value" id="os-info">--</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Architecture</div>
+      <div class="info-value" id="architecture">--</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">CPU Cores</div>
+      <div class="info-value" id="cpu-cores">--</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Boot Time</div>
+      <div class="info-value" id="boot-time">--</div>
+    </div>
+  </div>
+</section>
+
+<!-- Network Interfaces Section -->
+<section class="config-section">
+  <h2 class="section-title">Network Interfaces</h2>
+  <div class="loading-message" id="network-interfaces-loading">
+    <div class="spinner"></div>
+    <span>Loading network interfaces...</span>
+  </div>
+  <div id="network-interfaces-container" style="display: none;">
+    <!-- Network interfaces will be dynamically loaded here -->
+  </div>
+</section>
+
+<!-- Network Statistics Section -->
+<section class="config-section">
+  <h2 class="section-title">Network Statistics</h2>
+  <div class="loading-message" id="network-stats-loading">
+    <div class="spinner"></div>
+    <span>Loading network statistics...</span>
+  </div>
+  <div class="stats-grid" id="network-stats-grid" style="display: none;">
+    <div class="stat-card">
+      <div class="stat-icon">📤</div>
+      <div class="stat-value" id="bytes-sent">-- MB</div>
+      <div class="stat-label">Bytes Sent</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📥</div>
+      <div class="stat-value" id="bytes-recv">-- MB</div>
+      <div class="stat-label">Bytes Received</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔗</div>
+      <div class="stat-value" id="active-connections">--</div>
+      <div class="stat-label">Active Connections</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🌐</div>
+      <div class="stat-value" id="public-ip">--</div>
+      <div class="stat-label">Public IP</div>
+    </div>
+  </div>
+</section>
+
+<!-- WiFi Information Section -->
+<section class="config-section">
+  <h2 class="section-title">WiFi Information</h2>
+  <div class="loading-message" id="wifi-info-loading">
+    <div class="spinner"></div>
+    <span>Loading WiFi information...</span>
+  </div>
+  <div id="wifi-info-container" style="display: none;">
+    <div class="wifi-card">
+      <div class="wifi-header">
+        <span class="wifi-icon">📶</span>
+        <span class="wifi-status" id="wifi-status">Checking...</span>
+      </div>
+      <div class="wifi-details">
+        <div class="wifi-detail-item">
+          <span class="detail-label">Network (SSID):</span>
+          <span class="detail-value" id="wifi-ssid">--</span>
+        </div>
+        <div class="wifi-detail-item">
+          <span class="detail-label">Frequency Band:</span>
+          <span class="detail-value" id="wifi-band">--</span>
+        </div>
+        <div class="wifi-detail-item">
+          <span class="detail-label">Frequency:</span>
+          <span class="detail-value" id="wifi-frequency">--</span>
+        </div>
+        <div class="wifi-detail-item">
+          <span class="detail-label">Signal Strength:</span>
+          <span class="detail-value" id="wifi-signal">--</span>
+        </div>
+        <div class="wifi-detail-item">
+          <span class="detail-label">Signal Quality:</span>
+          <span class="detail-value" id="wifi-quality">--</span>
+        </div>
+        <div class="wifi-detail-item">
+          <span class="detail-label">Link Quality:</span>
+          <span class="detail-value" id="wifi-link-quality">--</span>
+        </div>
+        <div class="wifi-detail-item">
+          <span class="detail-label">Bit Rate:</span>
+          <span class="detail-value" id="wifi-bitrate">--</span>
+        </div>
+        <div class="wifi-detail-item">
+          <span class="detail-label">Interface:</span>
+          <span class="detail-value" id="wifi-interface">wlan0</span>
+        </div>
+        <div class="wifi-detail-item">
+          <span class="detail-label">IP Address:</span>
+          <span class="detail-value" id="wifi-ip">--</span>
+        </div>
+        <div class="wifi-detail-item">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value" id="wifi-up-status">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="back-link">
+  <a href="{{ url_for('main.index') }}" class="btn-back">← Back to Dashboard</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/configuration.js') }}"></script>
+{% endblock %}
+

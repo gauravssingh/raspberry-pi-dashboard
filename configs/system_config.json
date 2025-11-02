@@ -1,0 +1,13 @@
+{
+  "network": {
+    "local_ip": "192.168.68.65",
+    "hostname": "rpi",
+    "domain": "local",
+    "description": "Raspberry Pi 3B network configuration"
+  },
+  "system": {
+    "model": "Raspberry Pi 3B",
+    "description": "Home dashboard and GPIO controller"
+  }
+}
+

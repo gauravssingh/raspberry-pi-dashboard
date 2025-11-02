@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}GPIO Control - Raspberry Pi Dashboard{% endblock %}
+
+{% block content %}
+<h1>GPIO Control</h1>
+<p class="tagline">Control GPIO pins on your Raspberry Pi</p>
+
+<!-- Toast notification container - fixed position, won't shift layout -->
+<div id="toast-container" class="toast-container"></div>
+
+<!-- GPIO Mode Indicator -->
+<div id="gpio-mode-indicator" style="text-align: center; margin: 1rem auto; max-width: 800px;">
+  <div class="info-box" style="display: inline-block; padding: 0.5rem 1rem; background: rgba(52, 152, 219, 0.1); border-radius: 5px; font-size: 0.9rem;">
+    <span id="gpio-mode">Loading...</span>
+  </div>
+  <div style="margin-top: 0.5rem;">
+    <a href="{{ url_for('main.gpio_wiring') }}" target="_blank" style="color: #3498db; text-decoration: none; font-size: 0.85rem; background: rgba(52, 152, 219, 0.1); padding: 0.4rem 1rem; border-radius: 6px; display: inline-block; border: 1px solid rgba(52, 152, 219, 0.3);">
+      📐 View Wiring Guide (Breadboard Setup)
+    </a>
+  </div>
+</div>
+
+<!-- GPIO Controls Container -->
+<div id="gpio-container" style="max-width: 1000px; margin: 2rem auto;">
+  <!-- GPIO controls will be loaded here by JavaScript -->
+  <div class="loading-message" style="text-align: center; padding: 2rem; color: #888;">
+    Loading GPIO configuration...
+  </div>
+</div>
+
+<div class="quick-links" style="max-width: 400px;">
+  <a href="{{ url_for('main.index') }}" class="link-card"><span class="link-icon">🏠</span><div class="link-title">Home</div></a>
+  <a href="{{ url_for('main.gpio') }}" class="link-card"><span class="link-icon">🔄</span><div class="link-title">Refresh</div></a>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .gpio-group {
+    margin: 2rem 0;
+  }
+
+  .gpio-group-title {
+    font-size: 1.3rem;
+    color: #3498db;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+  }
+
+  .gpio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .gpio-card {
+    background: linear-gradient(135deg, rgba(44, 62, 80, 0.3), rgba(52, 73, 94, 0.3));
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .gpio-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+    border-color: rgba(52, 152, 219, 0.5);
+  }
+
+  .gpio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .gpio-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .gpio-type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .gpio-type-led {
+    background: rgba(241, 196, 15, 0.3);
+    color: #f1c40f;
+    border: 1px solid rgba(241, 196, 15, 0.5);
+  }
+
+  .gpio-type-relay {
+    background: rgba(155, 89, 182, 0.3);
+    color: #9b59b6;
+    border: 1px solid rgba(155, 89, 182, 0.5);
+  }
+
+  .gpio-info {
+    color: #bbb;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .gpio-description {
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .gpio-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .gpio-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  }
+
+  .status-indicator.low {
+    background: #95a5a6;
+    box-shadow: 0 0 0 2px rgba(149, 165, 166, 0.2);
+  }
+
+  .status-indicator.high {
+    background: #2ecc71;
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.6), 0 0 0 2px rgba(46, 204, 113, 0.2);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 8px rgba(46, 204, 113, 0.6), 0 0 0 2px rgba(46, 204, 113, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 15px rgba(46, 204, 113, 0.8), 0 0 0 2px rgba(46, 204, 113, 0.3);
+    }
+  }
+
+  .status-text {
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .status-text.low {
+    color: #95a5a6;
+  }
+
+  .status-text.high {
+    color: #2ecc71;
+  }
+
+  /* Toggle Switch */
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #34495e;
+    transition: 0.3s;
+    border-radius: 26px;
+    border: 2px solid rgba(52, 152, 219, 0.3);
+  }
+
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+
+  input:checked + .toggle-slider {
+    background-color: #27ae60;
+    border-color: rgba(46, 204, 113, 0.5);
+  }
+
+  input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+  }
+
+  input:disabled + .toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .info-box {
+    background: rgba(52, 152, 219, 0.1);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .info-box.warning {
+    background: rgba(230, 126, 34, 0.1);
+    border-color: rgba(230, 126, 34, 0.3);
+  }
+
+  .info-box.success {
+    background: rgba(46, 204, 113, 0.1);
+    border-color: rgba(46, 204, 113, 0.3);
+  }
+
+  /* Toast notifications - fixed position, won't affect layout */
+  .toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 350px;
+  }
+
+  .toast {
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    animation: slideInRight 0.3s ease-out;
+    position: relative;
+  }
+
+  .toast.success {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+  }
+
+  .toast.error {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+  }
+
+  .toast.info {
+    border-color: #3498db;
+    background: rgba(52, 152, 219, 0.15);
+    color: #3498db;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+  }
+
+  .toast.hiding {
+    animation: slideOutRight 0.3s ease-in forwards;
+  }
+
+  /* Mobile toast positioning */
+  @media (max-width: 768px) {
+    .toast-container {
+      top: 10px;
+      right: 10px;
+      left: 10px;
+      max-width: none;
+    }
+
+    .toast {
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/gpio.js') }}"></script>
+<script>
+  // Ensure GPIO controls initialize
+  console.log('GPIO page loaded, readyState:', document.readyState);
+  
+  // Try to initialize immediately if script already loaded
+  if (typeof initGPIOControls === 'function') {
+    console.log('initGPIOControls found, calling immediately');
+    initGPIOControls();
+  }
+  
+  // Also listen for DOMContentLoaded as backup
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded fired');
+    setTimeout(function() {
+      if (typeof initGPIOControls === 'function') {
+        console.log('Calling initGPIOControls from DOMContentLoaded');
+        initGPIOControls();
+      } else {
+        console.error('initGPIOControls not found after DOMContentLoaded');
+      }
+    }, 100);
+  });
+</script>
+{% endblock %}
+
